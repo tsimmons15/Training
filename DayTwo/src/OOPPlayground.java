@@ -54,9 +54,14 @@ class Car {
     }
 
     Car () {
-        this.mileage = 0;
+        /*this.mileage = 0;
         this.make = "Unknown";
         this.model = "Unknown";
+         */
+
+        setMileage(0);
+        setMake("Unknown");
+        setModel("Unknown");
     }
 
     Car (int mileage, String make, String model) {
