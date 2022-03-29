@@ -9,20 +9,20 @@ public class StringBuilderPlayground {
         String lengthy = "";
 
         long time = System.nanoTime();
-        for (int i = 0; i < 100000; i++) {
+        for (int i = 0; i < 1000000; i++) {
             lengthy += 'a';
         }
         time = System.nanoTime() - time;
-        System.out.println(lengthy);
+        //System.out.println(lengthy);
         System.out.println(time);
 
         StringBuilder lengthy2 = new StringBuilder();
         time = System.nanoTime();
-        for (int i = 0; i < 100000; i++) {
+        for (int i = 0; i < 1000000; i++) {
             lengthy2.append('a');
         }
         time = System.nanoTime() - time;
-        System.out.println(lengthy2);
+        //System.out.println(lengthy2);
         System.out.println(time);
 
         StringBuffer sbf = new StringBuffer("Hello");
