@@ -4,7 +4,7 @@
  The structure is broken down into:
  
  Training/
- &ensp; Weeks/
+ ensp Weeks/
  &ensp; WeekOne/
  &ensp;&ensp;DayOne/
  &ensp;&ensp;.
