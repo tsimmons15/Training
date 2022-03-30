@@ -1,5 +1,7 @@
 package Inheritance;
 
+import java.util.Objects;
+
 public class InheritancePlayground {
     public static void main(String[] args) {
         AccountHolder holder = new AccountHolder("Adam", "Ranieri");
@@ -84,6 +86,21 @@ class CreditCard {
         System.out.println("\tLimit\t: $" + this.creditLimit);
         System.out.println("\tBalance\t: $" + this.balance);
     }
+
+    @Override
+    public String toString() {
+        return "I am a Credit Card";
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(balance, creditLimit, owner);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return this.hashCode() == obj.hashCode();
+    }
 }
 
 class TravelCard extends CreditCard {
@@ -132,6 +149,16 @@ class TravelCard extends CreditCard {
             System.out.println("Insufficient limit!");
         }
     }
+
+    @Override
+    public String toString() {
+        return "I am a travel card";
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(balance, creditLimit, owner, miles);
+    }
 }
 
 class AccountHolder {
@@ -170,5 +197,10 @@ class AccountHolder {
 
     public void setAccountID(String accountID) {
         this.accountID = accountID;
+    }
+
+    @Override
+    public String toString() {
+        return firstName + " " + lastName + ", " + accountID;
     }
 }
