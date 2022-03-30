@@ -6,25 +6,15 @@
   Training/
   
     Weeks/
-    
       WeekOne/
-      
         DayOne/
-	
         .
-	
         .
-	
         .
-	
 	Projects/
-	
 	Practice/
-	
       .
-      
       .
-      
       .
 
 WeekOne/DayOne is the introduction material after orientation, etc...
