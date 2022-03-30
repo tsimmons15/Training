@@ -3,17 +3,17 @@
  
  The structure is broken down into:
  
-- Training/
-  - Weeks/
-    - WeekOne/
-    - DayOne/
-    -  .
-    -  .
-    -  .
-    -  Projects/
-    -  Practice/
-  -  .
-  -  .
-  -  .
+ Training/
+ &ensp; Weeks/
+ &ensp; WeekOne/
+ &ensp;&ensp;DayOne/
+ &ensp;&ensp;.
+ &ensp;&ensp;.
+ &ensp;&ensp;.
+ &ensp;&ensp;Projects/
+ &ensp;&ensp;Practice/
+ &ensp;.
+ &ensp;.
+ &ensp;.
 
 WeekOne/DayOne is the introduction material after orientation, etc...
