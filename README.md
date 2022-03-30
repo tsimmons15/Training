@@ -9,9 +9,10 @@
         .
         .
         .
+	Projects/
+	Practice/
       .
       .
       .
-    Projects/
 
 WeekOne/DayOne is the introduction material after orientation, etc...
