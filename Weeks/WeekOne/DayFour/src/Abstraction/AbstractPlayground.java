@@ -1,26 +1,21 @@
-package Inheritance;
+package Abstraction;
 
-public class InheritancePlayground {
+import java.util.Objects;
+
+public class AbstractPlayground {
     public static void main(String[] args) {
-        AccountHolder holder = new AccountHolder("Adam", "Ranieri");
-        CreditCard c = new CreditCard(0, 5000, holder);
-        TravelCard t = new TravelCard(0, 100000, holder);
-        c.debit(200);
-        c.credit(50);
-        c.showAccount();
-        t.showAccount();
-        t.debit(500);
-        t.credit(100);
-        t.showAccount();
+        CreditCard c1 = new TravelCard(0, 1000, new AccountHolder("A", "Person"));
+        CreditCard c2 = new CashbackCard(0, 1000, new AccountHolder("A", "Person"));
 
-        CreditCard t2 = t;
-        // t.getMiles();
-        ((TravelCard)t2).getMiles();
-        t.getMiles();
+        c1.debit(400);
+        c2.debit(400);
+
+        c1.showAccount();
+        c2.showAccount();
     }
 }
 
-class CreditCard {
+abstract class CreditCard {
     protected double balance;
     protected int creditLimit;
     protected AccountHolder owner;
@@ -55,37 +50,11 @@ class CreditCard {
         setOwner(owner);
     }
 
-    public void debit(double amount) {
-        double newBalance = balance + amount;
-        if (newBalance < this.creditLimit) {
-            balance = newBalance;
-        }
-        else {
-            System.out.println("Insufficient limit!");
-        }
-        //System.out.println("Balance: " + balance);
-    }
+    abstract public void debit(double amount) ;
 
-    public void credit(double amount) {
-        if (amount > 0) {
-            balance -= amount;
-        }
+    abstract public void credit(double amount);
 
-        //System.out.println("Balance: " + balance);
-    }
-
-    public void showAccount() {
-        int idLength = 21 - owner.accountID.length();
-        String id = String.format("%" + idLength + "s", owner.accountID);
-        System.out.println("=======================");
-        System.out.println("+   Credit  Account   +");
-        System.out.println("+  Owner: " + id + " +");
-        System.out.println("=======================");
-        System.out.println("\tLimit\t: $" + this.creditLimit);
-        System.out.println("\tBalance\t: $" + this.balance);
-    }
-<<<<<<< HEAD
-=======
+    abstract public void showAccount();
 
     @Override
     public String toString() {
@@ -101,7 +70,6 @@ class CreditCard {
     public boolean equals(Object obj) {
         return this.hashCode() == obj.hashCode();
     }
->>>>>>> DayThree
 }
 
 class TravelCard extends CreditCard {
@@ -140,18 +108,25 @@ class TravelCard extends CreditCard {
     }
 
     @Override
+    public void credit(double amount) {
+        if (amount > 0) {
+            balance -= amount;
+        }
+
+        //System.out.println("Balance: " + balance);
+    }
+
+    @Override
     public void debit(double amount) {
         double newBalance = balance + amount;
         if (newBalance < this.creditLimit) {
             this.balance = newBalance;
-            this.miles += (amount * .01);
+            this.miles += (amount * 3);
         }
         else {
             System.out.println("Insufficient limit!");
         }
     }
-<<<<<<< HEAD
-=======
 
     @Override
     public String toString() {
@@ -162,7 +137,46 @@ class TravelCard extends CreditCard {
     public int hashCode() {
         return Objects.hash(balance, creditLimit, owner, miles);
     }
->>>>>>> DayThree
+}
+
+class CashbackCard extends CreditCard {
+
+    public CashbackCard(double balance, int creditLimit, AccountHolder owner) {
+        super(balance, creditLimit,owner);
+    }
+
+    @Override
+    public void credit(double amount) {
+        if (amount > 0) {
+            balance -= amount;
+        }
+
+        //System.out.println("Balance: " + balance);
+    }
+
+    @Override
+    public void debit(double amount) {
+        double newBalance = balance + amount;
+        if (newBalance < this.creditLimit) {
+            this.balance = newBalance;
+            this.balance -= amount * .01;
+        }
+        else {
+            System.out.println("Insufficient limit!");
+        }
+    }
+
+    @Override
+    public void showAccount() {
+        int idLength = 21 - owner.accountID.length();
+        String id = String.format("%" + idLength + "s", owner.accountID);
+        System.out.println("=======================");
+        System.out.println("+   Cashback Account  +");
+        System.out.println("+  Owner: " + id + "  +");
+        System.out.println("=======================");
+        System.out.println("\tLimit\t: $" + this.creditLimit);
+        System.out.println("\tBalance\t: $" + this.balance);
+    }
 }
 
 class AccountHolder {
@@ -202,12 +216,9 @@ class AccountHolder {
     public void setAccountID(String accountID) {
         this.accountID = accountID;
     }
-<<<<<<< HEAD
-=======
 
     @Override
     public String toString() {
         return firstName + " " + lastName + ", " + accountID;
     }
->>>>>>> DayThree
 }
