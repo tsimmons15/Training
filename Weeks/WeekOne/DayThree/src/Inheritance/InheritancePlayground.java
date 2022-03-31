@@ -84,9 +84,7 @@ class CreditCard {
         System.out.println("\tLimit\t: $" + this.creditLimit);
         System.out.println("\tBalance\t: $" + this.balance);
     }
-<<<<<<< HEAD
-=======
-
+	
     @Override
     public String toString() {
         return "I am a Credit Card";
@@ -101,7 +99,6 @@ class CreditCard {
     public boolean equals(Object obj) {
         return this.hashCode() == obj.hashCode();
     }
->>>>>>> DayThree
 }
 
 class TravelCard extends CreditCard {
@@ -150,8 +147,6 @@ class TravelCard extends CreditCard {
             System.out.println("Insufficient limit!");
         }
     }
-<<<<<<< HEAD
-=======
 
     @Override
     public String toString() {
@@ -162,7 +157,6 @@ class TravelCard extends CreditCard {
     public int hashCode() {
         return Objects.hash(balance, creditLimit, owner, miles);
     }
->>>>>>> DayThree
 }
 
 class AccountHolder {
@@ -202,12 +196,9 @@ class AccountHolder {
     public void setAccountID(String accountID) {
         this.accountID = accountID;
     }
-<<<<<<< HEAD
-=======
 
     @Override
     public String toString() {
         return firstName + " " + lastName + ", " + accountID;
     }
->>>>>>> DayThree
 }
