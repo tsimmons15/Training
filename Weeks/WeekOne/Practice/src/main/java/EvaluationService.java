@@ -1,8 +1,12 @@
+import java.time.*;
+import java.time.chrono.ChronoLocalDateTime;
 import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAmount;
+import java.time.temporal.TemporalField;
+import java.time.temporal.TemporalUnit;
 import java.util.List;
 import java.util.Map;
 import java.util.*;
-import java.time.Duration;
 
 public class EvaluationService {
 
@@ -330,8 +334,43 @@ public class EvaluationService {
      * @return
      */
     public String toPigLatin(String string) {
+        StringBuilder sb = new StringBuilder();
+        String[] pieces = string.split(" ");
 
-        return null;
+        for(int i = 0; i < pieces.length; i++) {
+            sb.append(wordToPigLatin(pieces[i]) + ((i < pieces.length-1) ? " " : ""));
+        }
+
+        return sb.toString();
+    }
+
+    public String wordToPigLatin(String string) {
+        String vowels = "aeiou";
+        if (string == null || string.length() == 0) {
+            return string;
+        }
+
+        if (vowels.contains(string.charAt(0) +"")) {
+            return string + "ay";
+        }
+
+        if (string.startsWith("qu")) {
+            return string.substring(2) + "quay";
+        }
+
+        StringBuilder sb = new StringBuilder(string);
+        int i = 0;
+        char c = 0;
+        while (!vowels.contains(sb.charAt(i) +"")) {
+            c = sb.charAt(i);
+            sb.deleteCharAt(i);
+            sb.append(c);
+        }
+
+        sb.append("ay");
+
+
+        return sb.toString();
     }
 
     /**
@@ -680,8 +719,35 @@ public class EvaluationService {
      * @return
      */
     public Temporal getGigasecondDate(Temporal given) {
-        // TO Write an implementation for this method declaration
-        return null;
+        long offset = 1000000000;
+        int divisor = 60*60*24;
+        int days = (int)(offset / divisor);
+        offset %= divisor;
+        divisor /= 24;
+        int hours = (int)(offset / divisor);
+        offset %= divisor;
+        divisor /= 60;
+        int minutes = (int)(offset / divisor);
+        offset %= divisor;
+        int seconds = (int)offset;
+
+        LocalDateTime newDate;
+
+        if (given instanceof LocalDate) {
+            newDate = LocalDateTime.of((LocalDate) given, LocalTime.of(hours, minutes, seconds));
+        } else if (given instanceof LocalDateTime){
+            newDate = (LocalDateTime) given;
+            newDate = newDate.plus(Duration.ofHours(hours))
+                        .plus(Duration.ofMinutes(minutes))
+                        .plus(Duration.ofSeconds(seconds));
+        } else {
+            // Probably should throw an exception since I'm not expecting anything but LocalDate/Time
+            newDate = LocalDateTime.now();
+        }
+        newDate = newDate.plus(Period.of(0, 0, days));
+
+
+        return newDate;
     }
 
     /**
