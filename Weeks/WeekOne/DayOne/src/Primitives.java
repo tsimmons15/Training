@@ -11,5 +11,21 @@ public class Primitives {
         boolean b = false;
 
         System.out.println(c);
+        System.out.println(i);
+        references(i);
+        System.out.println(i);
+        references2(i);
+        System.out.println(i);
+        Integer newInt = new Integer(5);
+        references(newInt);
+        System.out.println(newInt);
+    }
+
+    public static void references(int i) {
+        i = 5;
+    }
+
+    public static void references2(Integer i) {
+        i = new Integer(4);
     }
 }
