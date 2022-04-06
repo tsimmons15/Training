@@ -2,6 +2,8 @@ package dev.simmons.data;
 
 import dev.simmons.entities.Book;
 import dev.simmons.utilities.ConnectionUtil;
+import dev.simmons.utilities.lists.List;
+import dev.simmons.utilities.lists.LinkedList;
 
 import javax.xml.transform.Result;
 import java.sql.*;
@@ -96,6 +98,29 @@ public class BookDAOPostgres implements BookDAO {
             return updated == 1;
         } catch (SQLException se) {
             return false;
+        }
+    }
+
+    @Override
+    public List<Book> getAllBooks() {
+        try {
+            Connection connection = ConnectionUtil.createConnection();
+            String sql = "select id, title, author, return_date from book;";
+            Statement statement = connection.createStatement();
+
+            ResultSet rs = statement.executeQuery(sql);
+            List<Book> books = new LinkedList<Book>();
+            while (rs.next()) {
+                Book retrieved = new Book();
+                retrieved.setId(rs.getInt("id"));
+                retrieved.setTitle(rs.getString("title"));
+                retrieved.setAuthor(rs.getString("author"));
+                retrieved.setReturnDate(rs.getLong("return_date"));
+                books.add(retrieved);
+            }
+            return books;
+        } catch (SQLException se) {
+            return null;
         }
     }
 }

@@ -1,6 +1,6 @@
 package dev.simmons.entities;
 
-public class Book {
+public class Book implements Comparable<Book> {
     private int id;
     private String title;
     private String author;
@@ -63,10 +63,13 @@ public class Book {
     @Override
     public String toString() {
         return "Book{" +
-                "id=" + id +
                 ", title='" + title + '\'' +
                 ", author='" + author + '\'' +
-                ", returnDate=" + returnDate +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Book o) {
+        return this.author.compareTo(o.getAuthor());
     }
 }

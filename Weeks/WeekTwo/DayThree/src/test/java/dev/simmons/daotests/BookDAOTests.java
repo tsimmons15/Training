@@ -3,6 +3,7 @@ package dev.simmons.daotests;
 import dev.simmons.data.BookDAO;
 import dev.simmons.data.BookDAOPostgres;
 import dev.simmons.entities.Book;
+import dev.simmons.utilities.lists.List;
 import org.junit.jupiter.api.*;
 
 import java.time.LocalDate;
@@ -49,5 +50,19 @@ public class BookDAOTests {
     public void deleteBook() {
         boolean result = bookDao.deleteBook(BookDAOTests.testBook);
         Assertions.assertTrue(result);
+    }
+
+    @Test
+    @Order(5)
+    public void manyBooks() {
+        for(int i = 0; i < 5; i++) {
+            bookDao.createBook(new Book(0, "Test", "Tester", 0));
+        }
+        List<Book> books = bookDao.getAllBooks();
+        Assertions.assertTrue(books.length() > 5);
+
+        for(int i = 0; i < books.length(); i++) {
+            bookDao.deleteBook(books.get(i));
+        }
     }
 }
