@@ -7,15 +7,13 @@ create table if not exists Client (
 );
 
 alter table client drop column client_salt;
-alter table Client add column client_salt bytea;
+alter table Client add column client_salt text;
 alter table client drop column client_password;
-alter table Client add column client_password bytea;
+alter table Client add column client_password text;
 select * from client;
 delete from client;
 
-insert into client (client_name, client_username, client_password, client_salt) values (
-	'Testing', 'testingUsername', '\x11111111', '\x77777777'
-);
+
 
 create table if not exists Account_Owners (
 	client_id int,
