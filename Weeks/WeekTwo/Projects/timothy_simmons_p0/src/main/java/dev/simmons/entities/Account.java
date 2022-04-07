@@ -5,8 +5,9 @@ import dev.simmons.utilities.lists.List;
 public interface Account {
     double getBalance();
     void setBalance(double balance);
+    void deposit(double amount);
+    boolean withdraw(double amount);
     AccountType getType();
-    void setType(AccountType type);
     List<Client> getOwners();
     boolean addOwner(Client client);
     boolean addOwners(Client... clients);
@@ -28,7 +29,7 @@ public interface Account {
         return result;
     }
 
-    public enum AccountType {
+    enum AccountType {
         Checking, Savings, CD
     }
 }

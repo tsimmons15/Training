@@ -6,14 +6,16 @@ import java.sql.SQLException;
 
 public class PostgresConnection implements DataConnection {
 
-    private static final String url = "jdbc:postgresql://localhost:5432";
-    private static final String username = "postgres";
-    private static final String password = "drzij4&%4S";
+    private static final String password = System.getenv("POSTGRES_PASSWORD");
+    private static final String username = System.getenv("POSTGRES_USERNAME");
+    private static final String urlAWS = "jdbc:postgresql://" + System.getenv("POSTGRES_AWS") + "/library";
+    private static final String urlLocal = "jdbc:postgresql://localhost:5432/library";
+
 
     @Override
     public Connection getConnection() {
         try {
-            return DriverManager.getConnection(url, username, password);
+            return DriverManager.getConnection(urlLocal, username, password);
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
