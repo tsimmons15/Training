@@ -1,5 +1,6 @@
-package dev.simmons.utilities.connection;
+package dev.simmons.utilities.utilities.logging.connection;
 
+import dev.simmons.utilities.connection.PostgresConnection;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

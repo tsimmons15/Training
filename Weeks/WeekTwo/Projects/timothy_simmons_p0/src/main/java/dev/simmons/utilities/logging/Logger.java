@@ -1,4 +1,4 @@
-package dev.simmons.logging;
+package dev.simmons.utilities.logging;
 
 import com.sun.istack.internal.NotNull;
 

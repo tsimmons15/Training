@@ -1,7 +1,7 @@
 package dev.simmons.data;
 
 import dev.simmons.entities.Client;
-import dev.simmons.logging.Logger;
+import dev.simmons.utilities.logging.Logger;
 import dev.simmons.utilities.connection.PostgresConnection;
 
 import java.sql.*;

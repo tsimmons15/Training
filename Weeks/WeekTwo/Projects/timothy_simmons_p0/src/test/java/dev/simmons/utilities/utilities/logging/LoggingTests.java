@@ -1,6 +1,6 @@
-package dev.simmons.utilities.logging;
+package dev.simmons.utilities.utilities.logging;
 
-import dev.simmons.logging.Logger;
+import dev.simmons.utilities.logging.Logger;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 

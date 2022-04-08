@@ -1,7 +1,5 @@
 package dev.simmons.entities;
 
-import dev.simmons.utilities.lists.List;
-
 public interface Account {
     int getId();
     void setId(int id);

@@ -1,6 +1,6 @@
 package dev.simmons.utilities.connection;
 
-import dev.simmons.logging.Logger;
+import dev.simmons.utilities.logging.Logger;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

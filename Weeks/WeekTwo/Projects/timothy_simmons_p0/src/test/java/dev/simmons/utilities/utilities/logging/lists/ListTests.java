@@ -1,5 +1,7 @@
-package dev.simmons.utilities.lists;
+package dev.simmons.utilities.utilities.logging.lists;
 
+import dev.simmons.utilities.lists.LinkedList;
+import dev.simmons.utilities.lists.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
