@@ -8,7 +8,7 @@ public interface ClientDAO {
     Client getClient(int id);
     Client getClient(String username);
 
-    Client updateClient(Client newClient);
+    boolean updateClient(Client newClient);
 
     boolean deleteClient(Client client);
     boolean deleteClient(int id);

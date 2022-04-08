@@ -3,26 +3,26 @@ package dev.simmons.entities;
 import dev.simmons.utilities.lists.List;
 
 public interface Account {
+    int getId();
+    void setId(int id);
     double getBalance();
     void setBalance(double balance);
     void deposit(double amount);
     boolean withdraw(double amount);
     AccountType getType();
-    List<Client> getOwners();
-    boolean addOwner(Client client);
-    boolean addOwners(Client... clients);
+    String displayAccount();
 
     static Account accountFactory(String type) {
         Account result = null;
         switch (AccountType.valueOf(type)) {
             case Checking:
-                //result = new CheckingAccount();
+                result = new CheckingAccount();
                 break;
             case Savings:
-                //result = new SavingsAccount();
+                result = new SavingsAccount();
                 break;
             case CD:
-                //result = new CDAccont();
+                result = new CDAccount();
                 break;
         }
 
@@ -30,6 +30,10 @@ public interface Account {
     }
 
     enum AccountType {
-        Checking, Savings, CD
+        Checking(0), Savings(.03), CD(.10);
+        public final double interest;
+        private AccountType(double interest) {
+            this.interest = interest;
+        }
     }
 }

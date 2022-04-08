@@ -7,8 +7,8 @@ public interface AccountDAO {
 
     Account getAccount(int id);
 
-    Account updateAccount(Account newAccount);
+    boolean updateAccount(Account newAccount);
 
-    Account deleteAccount(Account account);
-    Account deleteAccount(int id);
+    boolean deleteAccount(Account account);
+    boolean deleteAccount(int id);
 }

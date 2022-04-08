@@ -1,5 +1,7 @@
 package dev.simmons.entities;
 
+import dev.simmons.utilities.hashing.HashUtil;
+
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import java.security.NoSuchAlgorithmException;
@@ -50,15 +52,11 @@ public class Client {
     }
 
     public void setClientPassword(String clientPassword) {
-        try {
-            KeySpec spec = new PBEKeySpec(clientPassword.toCharArray(), clientSalt, 10, 32);
-            SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-            byte[] hash = keyFactory.generateSecret(spec).getEncoded();
-            this.clientPassword = Base64.getEncoder().encodeToString(hash);
-        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-            // Logging here, something went funky with the hashing algorithm
-            e.printStackTrace();
-        }
+        this.clientPassword = clientPassword;
+    }
+
+    public void hashClientPassword(String clientPassword) {
+        this.clientPassword = HashUtil.hashSaltedString(clientPassword, this.clientSalt);
     }
 
     public byte[] getClientSalt() {
@@ -67,5 +65,15 @@ public class Client {
 
     public void setClientSalt(byte[] clientSalt) {
         this.clientSalt = clientSalt;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Client)) {
+            return false;
+        }
+
+        Client other = (Client)o;
+        return this.clientId == other.getClientId();
     }
 }

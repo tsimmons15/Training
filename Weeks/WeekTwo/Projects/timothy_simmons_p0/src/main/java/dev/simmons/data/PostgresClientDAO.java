@@ -108,7 +108,7 @@ public class PostgresClientDAO implements ClientDAO{
     }
 
     @Override
-    public Client updateClient(Client newClient) {
+    public boolean updateClient(Client newClient) {
         try (Connection conn = PostgresConnection.getConnection()) {
             String sql = "update client set client_name = ?, client_username = ?, client_password = ?, client_salt = ? where client_id = ?";
             PreparedStatement statement = conn.prepareStatement(sql);
@@ -119,11 +119,8 @@ public class PostgresClientDAO implements ClientDAO{
             statement.setInt(5, newClient.getClientId());
 
             int updated = statement.executeUpdate();
-            if (updated == 1) {
-                return newClient;
-            }
 
-            return null;
+            return updated == 1;
         } catch (SQLException se) {
             // Implement logging here.
             // Problem with the SQL?
@@ -132,7 +129,7 @@ public class PostgresClientDAO implements ClientDAO{
             // Something was null (possibly the Prepared statement)
         }
 
-        return null;
+        return false;
     }
 
     @Override
