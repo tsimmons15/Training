@@ -1,5 +1,7 @@
 package dev.simmons.utilities.connection;
 
+import dev.simmons.logging.Logger;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -15,7 +17,7 @@ public class PostgresConnection {
         try {
             return DriverManager.getConnection(urlLocal, username, password);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Logger.log(Logger.Level.WARNING, e);
             return null;
         }
     }

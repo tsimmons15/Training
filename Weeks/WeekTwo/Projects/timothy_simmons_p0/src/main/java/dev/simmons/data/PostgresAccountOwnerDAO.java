@@ -2,6 +2,7 @@ package dev.simmons.data;
 
 import dev.simmons.entities.Account;
 import dev.simmons.entities.Client;
+import dev.simmons.logging.Logger;
 import dev.simmons.utilities.connection.PostgresConnection;
 import dev.simmons.utilities.lists.LinkedList;
 import dev.simmons.utilities.lists.List;
@@ -58,7 +59,7 @@ public class PostgresAccountOwnerDAO implements AccountOwnerDAO{
 
             return owners;
         } catch (SQLException | NullPointerException ex) {
-            ex.printStackTrace();
+            Logger.log(Logger.Level.ERROR, ex);
         }
 
         return null;
@@ -88,7 +89,7 @@ public class PostgresAccountOwnerDAO implements AccountOwnerDAO{
 
             return accounts;
         } catch (SQLException | NullPointerException ex) {
-            ex.printStackTrace();
+            Logger.log(Logger.Level.ERROR, ex);
         }
 
         return null;
@@ -116,7 +117,7 @@ public class PostgresAccountOwnerDAO implements AccountOwnerDAO{
 
             return updated == 1;
         } catch (SQLException | NullPointerException ex) {
-            ex.printStackTrace();
+            Logger.log(Logger.Level.ERROR, ex);
         }
 
         return false;

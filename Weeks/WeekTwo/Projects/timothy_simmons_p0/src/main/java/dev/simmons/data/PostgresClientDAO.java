@@ -1,6 +1,7 @@
 package dev.simmons.data;
 
 import dev.simmons.entities.Client;
+import dev.simmons.logging.Logger;
 import dev.simmons.utilities.connection.PostgresConnection;
 
 import java.sql.*;
@@ -30,14 +31,8 @@ public class PostgresClientDAO implements ClientDAO{
             client.setClientId(id);
 
             return client;
-        } catch (SQLException se) {
-            // Implement logging here.
-            // Problem with the SQL?
-            se.printStackTrace();
-        } catch (NullPointerException npe) {
-            // Implement logging here
-            // Something was null (possibly the Prepared statement)
-            npe.printStackTrace();
+        } catch (SQLException | NullPointerException npe) {
+            Logger.log(Logger.Level.ERROR, npe);
         }
 
         return null;
@@ -64,12 +59,8 @@ public class PostgresClientDAO implements ClientDAO{
             client.setClientSalt(rs.getString("client_salt").getBytes());
 
             return client;
-        } catch (SQLException se) {
-            // Implement logging here.
-            // Problem with the SQL?
-        } catch (NullPointerException npe) {
-            // Implement logging here
-            // Something was null (possibly the Prepared statement)
+        } catch (SQLException | NullPointerException npe) {
+            Logger.log(Logger.Level.ERROR, npe);
         }
 
         return null;
@@ -96,12 +87,8 @@ public class PostgresClientDAO implements ClientDAO{
             client.setClientSalt(rs.getBytes("client_salt"));
 
             return client;
-        } catch (SQLException se) {
-            // Implement logging here.
-            // Problem with the SQL?
-        } catch (NullPointerException npe) {
-            // Implement logging here
-            // Something was null (possibly the Prepared statement)
+        } catch (SQLException | NullPointerException npe) {
+            Logger.log(Logger.Level.ERROR, npe);
         }
 
         return null;
@@ -121,12 +108,8 @@ public class PostgresClientDAO implements ClientDAO{
             int updated = statement.executeUpdate();
 
             return updated == 1;
-        } catch (SQLException se) {
-            // Implement logging here.
-            // Problem with the SQL?
-        } catch (NullPointerException npe) {
-            // Implement logging here
-            // Something was null (possibly the Prepared statement)
+        } catch (SQLException | NullPointerException npe) {
+            Logger.log(Logger.Level.ERROR, npe);
         }
 
         return false;
@@ -150,12 +133,8 @@ public class PostgresClientDAO implements ClientDAO{
             }
 
             return false;
-        } catch (SQLException se) {
-            // Implement logging here.
-            // Problem with the SQL?
-        } catch (NullPointerException npe) {
-            // Implement logging here
-            // Something was null (possibly the Prepared statement)
+        } catch (SQLException | NullPointerException npe) {
+            Logger.log(Logger.Level.ERROR, npe);
         }
 
         return false;

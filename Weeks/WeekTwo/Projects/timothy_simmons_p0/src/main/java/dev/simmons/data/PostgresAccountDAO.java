@@ -2,8 +2,10 @@ package dev.simmons.data;
 
 import dev.simmons.entities.Account;
 import dev.simmons.entities.Client;
+import dev.simmons.logging.Logger;
 import dev.simmons.utilities.connection.PostgresConnection;
 import dev.simmons.utilities.lists.List;
+import sun.rmi.runtime.Log;
 
 import java.sql.*;
 
@@ -29,7 +31,7 @@ public class PostgresAccountDAO implements AccountDAO {
             return null;
         } catch (SQLException | NullPointerException se) {
             // Logging here
-            se.printStackTrace();
+            Logger.log(Logger.Level.ERROR, se);
         }
 
         return null;
@@ -53,9 +55,8 @@ public class PostgresAccountDAO implements AccountDAO {
             account.setBalance(rs.getDouble("account_balance"));
 
             return account;
-        } catch (SQLException se) {
-            // Logging here
-            se.printStackTrace();
+        } catch (SQLException | NullPointerException se) {
+            Logger.log(Logger.Level.ERROR, se);
         }
 
         return null;
@@ -74,9 +75,8 @@ public class PostgresAccountDAO implements AccountDAO {
             int updated = statement.executeUpdate();
 
             return updated == 1;
-        } catch (SQLException se) {
-            // Logging here
-            se.printStackTrace();
+        } catch (SQLException | NullPointerException se) {
+            Logger.log(Logger.Level.ERROR, se);
         }
 
         return false;
@@ -97,9 +97,8 @@ public class PostgresAccountDAO implements AccountDAO {
             int updated = statement.executeUpdate();
 
             return updated == 1;
-        } catch (SQLException se) {
-            // Logging here
-            se.printStackTrace();
+        } catch (SQLException | NullPointerException se) {
+            Logger.log(Logger.Level.ERROR, se);
         }
 
         return false;
