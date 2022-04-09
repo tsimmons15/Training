@@ -1,4 +1,4 @@
-package dev.simmons.utilities.utilities.logging.connection;
+package dev.simmons.utilities.connection;
 
 import dev.simmons.utilities.connection.PostgresConnection;
 import org.junit.jupiter.api.Assertions;

@@ -25,7 +25,7 @@ public class PostgresAccountOwnerDAO implements AccountOwnerDAO{
 
             return updated == 1;
         } catch (SQLException | NullPointerException ex) {
-            ex.printStackTrace();
+            Logger.log(Logger.Level.INFO, ex);
         }
 
         return false;

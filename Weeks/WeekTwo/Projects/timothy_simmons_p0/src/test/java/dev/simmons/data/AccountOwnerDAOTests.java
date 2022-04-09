@@ -1,4 +1,4 @@
-package dev.simmons.utilities.data;
+package dev.simmons.data;
 
 import dev.simmons.data.*;
 import dev.simmons.entities.Account;
@@ -121,5 +121,11 @@ public class AccountOwnerDAOTests {
         Assertions.assertTrue(aoDAO.deleteOwner(accounts.get(3), clients.get(3)));
         Assertions.assertTrue(aoDAO.deleteOwner(accounts.get(4), clients.get(4)));
 
+        for (int i = 0; i < clients.length(); i++) {
+            clientDAO.deleteClient(clients.get(i));
+        }
+        for (int i = 0; i < accounts.length(); i++) {
+            accountDAO.deleteAccount(accounts.get(i));
+        }
     }
 }

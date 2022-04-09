@@ -1,12 +1,8 @@
-package dev.simmons.utilities.data;
+package dev.simmons.data;
 
-import dev.simmons.data.ClientDAO;
-import dev.simmons.data.PostgresClientDAO;
 import dev.simmons.entities.Client;
 import dev.simmons.utilities.hashing.HashUtil;
 import org.junit.jupiter.api.*;
-
-import java.util.Locale;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ClientDAOTests {
@@ -32,26 +28,6 @@ public class ClientDAOTests {
 
     @Test
     @Order(2)
-    public void loginClient() {
-        String username = client.getClientUsername();
-        String wrongUsername = "doesntexist";
-        String password = HashUtil.hashSaltedString("testing1", client.getClientSalt());
-        Assertions.assertNotEquals("testing1", password);
-        Assertions.assertEquals(password, client.getClientPassword());
-        String wrongPassword = HashUtil.hashSaltedString("TeStInG1", client.getClientSalt());
-        Assertions.assertNotEquals("TeStInG1", wrongPassword);
-        Assertions.assertNotEquals(wrongPassword, password);
-
-        Client correct = clientDAO.getClient(username);
-        Assertions.assertEquals(correct, client);
-        Assertions.assertTrue(client.getClientPassword().equals(correct.getClientPassword()));
-
-        Client incorrect = clientDAO.getClient(wrongUsername);
-        Assertions.assertNull(incorrect);
-    }
-
-    @Test
-    @Order(3)
     public void getClient() {
         int id = client.getClientId();
 
@@ -65,7 +41,7 @@ public class ClientDAOTests {
     }
 
     @Test
-    @Order(4)
+    @Order(3)
     public void updateClient() {
         ClientDAOTests.client.setClientName("Testing2");
         ClientDAOTests.client.setClientUsername("testing2");
@@ -75,7 +51,7 @@ public class ClientDAOTests {
     }
 
     @Test
-    @Order(5)
+    @Order(4)
     public void deleteClient() {
         Assertions.assertTrue(ClientDAOTests.clientDAO.deleteClient(ClientDAOTests.client));
         Assertions.assertNull(clientDAO.getClient(client.getClientId()));
