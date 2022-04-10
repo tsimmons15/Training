@@ -80,12 +80,35 @@ public class LinkedList<T> implements List<T> {
 
     @Override
     public boolean remove(T item) {
-        if (item == null) {
+        if (item == null || size == 0) {
             return false;
         }
 
         boolean removed = false;
+        Link<T> curr = this.head;
 
+        if (this.head.data.equals(item)) {
+            this.head = this.head.next;
+
+            size--;
+            return true;
+        }
+
+        while (curr.next != null) {
+            if (curr.next.data.equals(item)) {
+                removed = true;
+                break;
+            }
+
+            curr = curr.next;
+        }
+
+        if (removed) {
+            Link<T> next = curr.next;
+            curr.next = next.next;
+            next.next = null;
+            size--;
+        }
 
         return removed;
     }

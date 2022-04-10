@@ -6,6 +6,8 @@ create table if not exists Client (
 	client_salt varchar(32) not null
 ); 
 select * from client;
+select * from account;
+select * from account_owner;
 
 delete from account_owner;
 delete from client;
@@ -28,3 +30,23 @@ create table if not exists Account (
 	account_type varchar(10) not null default 'Checking'
 );
 select * from account;
+
+
+insert into client (client_name, client_username, client_password, client_salt) values ('Testing', 'testing', 'pass', 'passsalt');
+insert into client (client_name, client_username, client_password, client_salt) values ('Testing', 'testing1', 'pass', 'passsalt');
+insert into client (client_name, client_username, client_password, client_salt) values ('Testing', 'testing2', 'pass', 'passsalt');
+insert into client (client_name, client_username, client_password, client_salt) values ('Testing', 'testing3', 'pass', 'passsalt');
+
+insert into account (account_balance) values (0);
+
+select * from account;
+select * from client;
+select * from account_owner;
+
+insert into account_owner (client_id, account_id) values (175, 119);
+insert into account_owner (client_id, account_id) values (176, 120);
+insert into account_owner (client_id, account_id) values (177, 120);
+
+
+select * from account a inner join account_owner ao on a.account_id = ao.account_id 
+  where ao.client_id = 116 and a.account_id in ( null );

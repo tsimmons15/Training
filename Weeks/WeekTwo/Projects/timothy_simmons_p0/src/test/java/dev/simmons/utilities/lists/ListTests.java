@@ -44,15 +44,19 @@ public class ListTests {
         names.add("D");
         String result = names.remove(1);
         Assertions.assertEquals("B", result);
+        Assertions.assertEquals(3, names.length());
         result = names.remove(2);
         Assertions.assertEquals("D", result);
+        Assertions.assertEquals(2, names.length());
         Assertions.assertThrows(ArrayIndexOutOfBoundsException.class, () -> names.remove(-1));
         Assertions.assertThrows(ArrayIndexOutOfBoundsException.class, () -> names.remove(55));
 
         result = names.remove(0);
         Assertions.assertEquals("A", result);
+        Assertions.assertEquals(1, names.length());
         result = names.remove(0);
         Assertions.assertEquals("C", result);
+        Assertions.assertEquals(0, names.length());
 
         Assertions.assertThrows(ArrayIndexOutOfBoundsException.class, () -> names.remove(0));
     }
@@ -65,13 +69,17 @@ public class ListTests {
         names.add("C");
         names.add("D");
         Assertions.assertTrue(names.remove("B"));
+        Assertions.assertEquals(3, names.length());
         Assertions.assertTrue(names.remove("D"));
+        Assertions.assertEquals(2, names.length());
 
         Assertions.assertFalse(names.remove("D"));
         Assertions.assertFalse(names.remove("E"));
 
         Assertions.assertTrue(names.remove("A"));
+        Assertions.assertEquals(1, names.length());
         Assertions.assertTrue(names.remove("C"));
+        Assertions.assertEquals(0, names.length());
 
         Assertions.assertFalse(names.remove("A"));
     }

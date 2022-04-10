@@ -101,6 +101,56 @@ public class PostgresAccountOwnerDAO implements AccountOwnerDAO{
     }
 
     @Override
+    public List<Account> getAccountsSolelyOwned(int clientId) {
+        try (Connection conn = PostgresConnection.getConnection()) {
+            // First: find the list of accounts that are solely owned.
+            String sql = "select account_id from account_owner\n" +
+                            "group by account_id\n" +
+                            "having count(client_id) = 1;";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            ResultSet rs = statement.executeQuery();
+            StringBuilder sb = new StringBuilder("(");
+            while (rs.next()) {
+                sb.append(rs.getString(1) + ",");
+            }
+            if (sb.length() > 1) {
+                sb.setCharAt(sb.length()-1, ')');
+            } else {
+                sb.append(" null )");
+            }
+
+
+            // With the list of solely owned accounts,
+            // get the list of accounts owned by the client that show up in that list
+            sql = "select * from account a inner join account_owner ao on a.account_id = ao.account_id " +
+                    "where ao.client_id = ? and a.account_id in " + sb.toString() + ";";
+            statement = conn.prepareStatement(sql);
+            statement.setInt(1, clientId);
+
+            rs = statement.executeQuery();
+
+            List<Account> accounts = new LinkedList<Account>();
+            while (rs.next()) {
+                Account account = Account.accountFactory(rs.getString("account_type"));
+                account.setId(rs.getInt("account_id"));
+                account.setBalance(rs.getDouble("account_balance"));
+                accounts.add(account);
+            }
+
+            return accounts;
+        } catch (SQLException | NullPointerException ex) {
+            Logger.log(Logger.Level.ERROR, ex);
+        }
+
+        return null;
+    }
+
+    @Override
+    public List<Account> getAccountsSolelyOwned(Client client) {
+        return getAccountsSolelyOwned(client.getClientId());
+    }
+
+    @Override
     public boolean deleteOwner(Account account, Client client) {
         return deleteOwner(account.getId(), client.getClientId());
     }

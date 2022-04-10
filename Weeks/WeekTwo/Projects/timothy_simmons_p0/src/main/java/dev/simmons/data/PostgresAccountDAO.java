@@ -80,6 +80,32 @@ public class PostgresAccountDAO implements AccountDAO {
     }
 
     @Override
+    public boolean updateAccounts(Account... accounts) {
+        try (Connection conn = PostgresConnection.getConnection()) {
+            String sql = "update account set account_balance = ?, account_type = ? where account_id = ?;";
+            conn.setAutoCommit(false);
+            int updated = 0;
+            for (Account account : accounts) {
+                PreparedStatement statement = conn.prepareStatement(sql);
+                statement.setDouble(1, account.getBalance());
+                statement.setString(2, account.getType().name());
+                statement.setInt(3, account.getId());
+                updated = statement.executeUpdate();
+                if (updated != 1) {
+                    conn.rollback();
+                    return false;
+                }
+            }
+
+            conn.commit();
+            return true;
+        } catch(SQLException se) {
+            Logger.log(Logger.Level.ERROR, se);
+        }
+        return false;
+    }
+
+    @Override
     public boolean deleteAccount(Account account) {
         return deleteAccount(account.getId());
     }

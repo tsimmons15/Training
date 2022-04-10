@@ -19,16 +19,16 @@ public class BankTests {
         Assertions.assertTrue(bank.createAccount(account, client));
 
         Client coowner = new Client();
-        coowner.setClientUsername("Testing2");
+        coowner.setClientName("Testing2");
         coowner.setClientUsername("testing2");
         coowner.setClientPassword("testing2");
         Assertions.assertTrue(bank.registerClient(coowner));
         Assertions.assertTrue(bank.addOwner(account, coowner));
 
         Client coowner2 = new Client();
-        coowner.setClientUsername("Testing3");
-        coowner.setClientUsername("testing3");
-        coowner.setClientPassword("testing2");
+        coowner2.setClientName("Testing3");
+        coowner2.setClientUsername("testing3");
+        coowner2.setClientPassword("testing2");
         Assertions.assertTrue(bank.registerClient(coowner2));
         Assertions.assertTrue(bank.addOwner(account, coowner2));
 
@@ -37,7 +37,7 @@ public class BankTests {
         Assertions.assertTrue(bank.removeOwner(account, client));
         Assertions.assertEquals(2, bank.getOwners(account.getId()).length());
 
-        Assertions.assertTrue(bank.removeOwner(account, client));
+        Assertions.assertFalse(bank.removeOwner(account, client));
         Assertions.assertEquals(2, bank.getOwners(account.getId()).length());
 
         Assertions.assertTrue(bank.removeOwner(account, coowner));
@@ -48,6 +48,10 @@ public class BankTests {
 
         // An account with no owners should be closed out.
         Assertions.assertNull(bank.getAccount(account.getId()));
+
+        Assertions.assertTrue(bank.closeClient(client));
+        Assertions.assertTrue(bank.closeClient(coowner2));
+        Assertions.assertTrue(bank.closeClient(coowner));
     }
 
     @Test
@@ -72,11 +76,13 @@ public class BankTests {
         Assertions.assertFalse(bank.deposit(account, Double.MAX_VALUE));
         Assertions.assertEquals(0, account.getBalance());
 
-        Assertions.assertFalse(bank.deposit(account, 500000));
-        Assertions.assertEquals(500000, account.getBalance(), .01);
+        Assertions.assertTrue(bank.deposit(account, 500000));
+        double expected = 500000 * (1.00 + account.getType().interest);
+        Assertions.assertEquals(expected, account.getBalance(), .01);
 
         Assertions.assertTrue(bank.withdraw(account,1000));
-        Assertions.assertEquals(499000, account.getBalance(), .01);
+        expected -= 1000 * (1.00 + account.getType().interest);
+        Assertions.assertEquals(expected, account.getBalance(), .01);
 
         // Client is leaving, so should close out accounts (if they are the only owners)
         bank.closeClient(client);
@@ -106,12 +112,12 @@ public class BankTests {
         Assertions.assertFalse(bank.deposit(account, Double.MAX_VALUE));
         Assertions.assertEquals(0, account.getBalance());
 
-        Assertions.assertFalse(bank.deposit(account, 500000));
-        double expected = 500000 * (1.00 + Account.AccountType.Savings.interest);
+        Assertions.assertTrue(bank.deposit(account, 500000));
+        double expected = 500000 * (1.00 + account.getType().interest);
         Assertions.assertEquals(expected, account.getBalance(), .01);
 
         Assertions.assertTrue(bank.withdraw(account,1000));
-        expected -= 1000;
+        expected -= 1000 * (1.00 + account.getType().interest * 1.01);
         Assertions.assertEquals(expected, account.getBalance(), .01);
 
         bank.closeClient(client);
@@ -141,12 +147,12 @@ public class BankTests {
         Assertions.assertFalse(bank.deposit(account, Double.MAX_VALUE));
         Assertions.assertEquals(0, account.getBalance());
 
-        Assertions.assertFalse(bank.deposit(account, 500000));
-        double expected = 500000 * (1.00 + Account.AccountType.Savings.interest);
+        Assertions.assertTrue(bank.deposit(account, 500000));
+        double expected = 500000 * (1.00 + account.getType().interest);
         Assertions.assertEquals(expected, account.getBalance(), .01);
 
         Assertions.assertTrue(bank.withdraw(account,1000));
-        expected -= 1000 * (1.00 + Account.AccountType.CD.interest * 1.5);
+        expected -= 1000 * (1.00 + account.getType().interest * 1.5);
         Assertions.assertEquals(expected, account.getBalance(), .01);
 
         bank.closeClient(client);
@@ -166,9 +172,9 @@ public class BankTests {
         client.setClientPassword("testing1");
 
         Client other = new Client();
-        client.setClientName("Testing 2");
-        client.setClientUsername("otherTesting");
-        client.setClientPassword("other");
+        other.setClientName("Testing 2");
+        other.setClientUsername("otherTesting");
+        other.setClientPassword("other");
 
         Bank bank = new Banking();
         Assertions.assertTrue(bank.registerClient(client));
@@ -181,22 +187,24 @@ public class BankTests {
         Assertions.assertEquals(2, bank.getAccountInfo(client.getClientId()).length());
         Assertions.assertEquals(1, bank.getAccountInfo(other.getClientId()).length());
 
-        Assertions.assertTrue(bank.deposit(cd, 1000000));
-        Assertions.assertTrue(bank.deposit(checking, 1000000));
-        Assertions.assertTrue(bank.deposit(otherChecking, 1000000));
+        Assertions.assertTrue(bank.deposit(cd, 100000));
+        Assertions.assertTrue(bank.deposit(checking, 100000));
+        Assertions.assertTrue(bank.deposit(otherChecking, 100000));
 
 
         // Owned account transferring
         Assertions.assertTrue(bank.transfer(cd, checking, 1000));
         Assertions.assertTrue(bank.transfer(checking, cd, 1000));
-        Assertions.assertEquals(1000000, bank.getAccount(checking.getId()).getBalance(), .01);
-        double expected = 1000000 - 1000 * (Account.AccountType.CD.interest * 0.5);
+        Assertions.assertEquals(100000, bank.getAccount(checking.getId()).getBalance(), .01);
+        double expected = 100000 * (1.00 + cd.getType().interest)
+                            - 1000 * (1.00 + cd.getType().interest * 1.5)
+                            + 1000 * (1.00 + cd.getType().interest);
         Assertions.assertEquals(expected, bank.getAccount(cd.getId()).getBalance(), .01);
 
         // Between client transferring
         Assertions.assertTrue(bank.transfer(checking, otherChecking, 1000));
-        Assertions.assertEquals(1000000 - 1000, bank.getAccount(checking.getId()).getBalance(), .01);
-        Assertions.assertEquals(1000000 + 1000, bank.getAccount(otherChecking.getId()).getBalance(), .01);
+        Assertions.assertEquals(100000 - 1000, bank.getAccount(checking.getId()).getBalance(), .01);
+        Assertions.assertEquals(100000 + 1000, bank.getAccount(otherChecking.getId()).getBalance(), .01);
 
         Assertions.assertTrue(bank.closeClient(client));
         Assertions.assertTrue(bank.closeClient(other));

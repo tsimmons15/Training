@@ -14,6 +14,9 @@ public interface AccountOwnerDAO {
     List<Account> getAccounts(int clientId);
     List<Account> getAccounts(Client client);
 
+    List<Account> getAccountsSolelyOwned(int clientId);
+    List<Account> getAccountsSolelyOwned(Client client);
+
     // Update doesn't necessarily make sense in this case... They can be added to/removed from accounts
 
     boolean deleteOwner(Account account, Client client);

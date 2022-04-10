@@ -5,6 +5,8 @@ public interface Account {
     void setId(int id);
     double getBalance();
     void setBalance(double balance);
+    boolean deposit(double amount);
+    boolean withdraw(double amount);
     AccountType getType();
 
     static Account accountFactory(String type) {
