@@ -1,6 +1,9 @@
 package collections;
 
+import java.util.Iterator;
 import java.util.Objects;
+import java.util.Spliterator;
+import java.util.function.Consumer;
 
 public class Person implements Comparable<Person> {
     private String firstName;
