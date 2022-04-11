@@ -15,6 +15,8 @@ public interface Bank {
     Client lookupClient(Client client);
     Client lookupClient(String username);
     Account getAccount(int accountId);
+    List<Account> getFullAccountInfo(int clientId);
+    List<Account> getFullAccountInfo();
 
     boolean registerClient(Client client);
     boolean createAccount(Account account, Client owner);

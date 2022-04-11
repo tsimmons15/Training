@@ -1,5 +1,9 @@
 package dev.simmons.utilities.lists;
 
+import java.util.Iterator;
+import java.util.Spliterator;
+import java.util.function.Consumer;
+
 public class LinkedList<T> implements List<T> {
     private Link<T> head;
     private int size;
@@ -144,6 +148,44 @@ public class LinkedList<T> implements List<T> {
         }
 
         return i;
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        return new Iterator<T>() {
+            private Link<T> curr = LinkedList.this.head;
+
+            @Override
+            public boolean hasNext() {
+                return curr.next != null;
+            }
+
+            @Override
+            public T next() {
+                curr = curr.next;
+                return curr.data;
+            }
+
+            @Override
+            public void remove() {
+                Iterator.super.remove();
+            }
+
+            @Override
+            public void forEachRemaining(Consumer<? super T> action) {
+                Iterator.super.forEachRemaining(action);
+            }
+        };
+    }
+
+    @Override
+    public void forEach(Consumer<? super T> action) {
+        List.super.forEach(action);
+    }
+
+    @Override
+    public Spliterator<T> spliterator() {
+        return List.super.spliterator();
     }
 
     protected class Link<T> {

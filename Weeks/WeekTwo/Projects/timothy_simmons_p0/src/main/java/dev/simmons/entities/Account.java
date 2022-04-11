@@ -1,5 +1,7 @@
 package dev.simmons.entities;
 
+import dev.simmons.utilities.lists.List;
+
 public interface Account {
     int getId();
     void setId(int id);
@@ -7,7 +9,10 @@ public interface Account {
     void setBalance(double balance);
     boolean deposit(double amount);
     boolean withdraw(double amount);
+    List<Client> getOwners();
+    void setOwners(List<Client> owners);
     AccountType getType();
+    String getDiagnostics();
 
     static Account accountFactory(String type) {
         Account result = null;
@@ -19,6 +24,23 @@ public interface Account {
                 result = new SavingsAccount();
                 break;
             case CD:
+                result = new CDAccount();
+                break;
+        }
+
+        return result;
+    }
+
+    static Account accountFactory(int ordinal) {
+        Account result = null;
+        switch (ordinal) {
+            case 1:
+                result = new CheckingAccount();
+                break;
+            case 2:
+                result = new SavingsAccount();
+                break;
+            case 3:
                 result = new CDAccount();
                 break;
         }

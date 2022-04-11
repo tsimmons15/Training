@@ -96,6 +96,16 @@ public class Banking implements Bank{
     }
 
     @Override
+    public List<Account> getFullAccountInfo(int clientId) {
+        return aoDAO.getFullAccountInfo(clientId);
+    }
+
+    @Override
+    public List<Account> getFullAccountInfo() {
+        return aoDAO.getFullAccountInfo();
+    }
+
+    @Override
     public boolean registerClient(Client client) {
         if (client == null) {
             return false;
@@ -146,10 +156,17 @@ public class Banking implements Bank{
             return false;
         }
 
-        List<Account> accounts = aoDAO.getAccountsSolelyOwned(client);
+        List<Account> accounts = aoDAO.getAccounts(client.getClientId());
+        List<Client> clients = null;
+        Account account = null;
         boolean result = true;
         for(int i = 0; i < accounts.length(); i++) {
-            result &= removeOwner(accounts.get(i), client);
+            account = accounts.get(i);
+            clients = aoDAO.getOwners(account.getId());
+            result &= removeOwner(account, client);
+            if (clients.length() == 0) {
+                result &= accountDAO.deleteAccount(account);
+            }
         }
 
         result &= clientDAO.deleteClient(client);

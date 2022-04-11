@@ -101,6 +101,88 @@ public class PostgresAccountOwnerDAO implements AccountOwnerDAO{
     }
 
     @Override
+    public List<Account> getFullAccountInfo(int clientId) {
+        try (Connection conn = PostgresConnection.getConnection()) {
+            String sql = "select *\n" +
+                    "from account a \n" +
+                    "inner join account_owner ao on a.account_id = ao.account_id \n" +
+                    "inner join client c on c.client_id = ao.client_id \n" +
+                    "where c.client_id = ? \n" +
+                    "order by a.account_id";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setInt(1, clientId);
+
+            ResultSet rs = statement.executeQuery();
+            List<Account> accounts = new LinkedList<>();
+            int lastId = -1;
+            int currId = -1;
+            Account account = null;
+            Client client = null;
+            while (rs.next()) {
+                currId = rs.getInt("account_id");
+                if (currId != lastId) {
+                    account = Account.accountFactory(rs.getString("account_type"));
+                    account.setId(currId);
+                    account.setBalance(rs.getDouble("account_balance"));
+                    account.setOwners(new LinkedList<Client>());
+                    accounts.add(account);
+                    lastId = currId;
+                }
+                client = new Client();
+                client.setClientName(rs.getString("client_name"));
+                client.setClientUsername(rs.getString("client_username"));
+                account.getOwners().add(client);
+            }
+
+            return accounts;
+        } catch (SQLException se) {
+            Logger.log(Logger.Level.ERROR, se);
+        }
+
+        return null;
+    }
+
+    @Override
+    public List<Account> getFullAccountInfo() {
+        try (Connection conn = PostgresConnection.getConnection()) {
+            String sql = "select *\n" +
+                    "from account a \n" +
+                    "inner join account_owner ao on a.account_id = ao.account_id \n" +
+                    "inner join client c on c.client_id = ao.client_id \n" +
+                    "order by a.account_id";
+            PreparedStatement statement = conn.prepareStatement(sql);
+
+            ResultSet rs = statement.executeQuery();
+            List<Account> accounts = new LinkedList<>();
+            int lastId = -1;
+            int currId = -1;
+            Account account = null;
+            Client client = null;
+            while (rs.next()) {
+                currId = rs.getInt("account_id");
+                if (currId != lastId) {
+                    account = Account.accountFactory(rs.getString("account_type"));
+                    account.setId(currId);
+                    account.setBalance(rs.getDouble("account_balance"));
+                    account.setOwners(new LinkedList<Client>());
+                    accounts.add(account);
+                    lastId = currId;
+                }
+                client = new Client();
+                client.setClientName(rs.getString("client_name"));
+                client.setClientUsername(rs.getString("client_username"));
+                account.getOwners().add(client);
+            }
+
+            return accounts;
+        } catch (SQLException se) {
+            Logger.log(Logger.Level.ERROR, se);
+        }
+
+        return null;
+    }
+
+    @Override
     public List<Account> getAccountsSolelyOwned(int clientId) {
         try (Connection conn = PostgresConnection.getConnection()) {
             // First: find the list of accounts that are solely owned.
