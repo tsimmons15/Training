@@ -67,6 +67,10 @@ public class Client {
         this.clientSalt = clientSalt;
     }
 
+    public String getDiagnostics() {
+        return "[Client](id=" + clientId + ", name=" + this.getClientName() + ", username=" + this.getClientUsername() + ")";
+    }
+
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Client)) {

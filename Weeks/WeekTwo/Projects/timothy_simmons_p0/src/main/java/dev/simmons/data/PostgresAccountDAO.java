@@ -1,6 +1,7 @@
 package dev.simmons.data;
 
 import dev.simmons.entities.Account;
+import dev.simmons.utilities.lists.List;
 import dev.simmons.utilities.logging.Logger;
 import dev.simmons.utilities.connection.PostgresConnection;
 

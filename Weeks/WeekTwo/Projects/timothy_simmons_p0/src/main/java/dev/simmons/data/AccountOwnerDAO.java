@@ -13,6 +13,8 @@ public interface AccountOwnerDAO {
 
     List<Account> getAccounts(int clientId);
     List<Account> getAccounts(Client client);
+    List<Account> getFullAccountInfo(int clientId);
+    List<Account> getFullAccountInfo();
 
     List<Account> getAccountsSolelyOwned(int clientId);
     List<Account> getAccountsSolelyOwned(Client client);

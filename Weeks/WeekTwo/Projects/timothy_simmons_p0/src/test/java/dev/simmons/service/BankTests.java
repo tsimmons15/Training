@@ -1,7 +1,9 @@
 package dev.simmons.service;
 
 import dev.simmons.entities.Account;
+import dev.simmons.entities.CheckingAccount;
 import dev.simmons.entities.Client;
+import dev.simmons.utilities.lists.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -208,5 +210,45 @@ public class BankTests {
 
         Assertions.assertTrue(bank.closeClient(client));
         Assertions.assertTrue(bank.closeClient(other));
+    }
+
+    @Test
+    public void handleFullAccountInfo() {
+        Bank bank = new Banking();
+        Client client = new Client();
+        client.setClientName("Testing1");
+        client.setClientUsername("testing1");
+        client.hashClientPassword("testing1");
+        Assertions.assertTrue(bank.registerClient(client));
+        Account account = Account.accountFactory(Account.AccountType.Checking.name());
+        Assertions.assertTrue(bank.createAccount(account, client));
+
+        Client coowner = new Client();
+        coowner.setClientName("Testing2");
+        coowner.setClientUsername("testing2");
+        coowner.setClientPassword("testing2");
+        Assertions.assertTrue(bank.registerClient(coowner));
+        Assertions.assertTrue(bank.addOwner(account, coowner));
+
+        Client owner2 = new Client();
+        owner2.setClientName("Testing3");
+        owner2.setClientUsername("testing3");
+        owner2.setClientPassword("testing2");
+        Assertions.assertTrue(bank.registerClient(owner2));
+        Account account2 = Account.accountFactory(Account.AccountType.Checking.name());
+        Assertions.assertTrue(bank.createAccount(account2, owner2));
+        Assertions.assertTrue(bank.addOwner(account2, coowner));
+
+        List<Account> accounts = bank.getFullAccountInfo();
+        Assertions.assertNotNull(accounts);
+        Assertions.assertEquals(2, accounts.length());
+        Assertions.assertNotNull(accounts.get(0).getOwners());
+        Assertions.assertEquals(2, accounts.get(0).getOwners().length());
+        Assertions.assertNotNull(accounts.get(1).getOwners());
+        Assertions.assertEquals(2, accounts.get(1).getOwners().length());
+
+        Assertions.assertTrue(bank.closeClient(client));
+        Assertions.assertTrue(bank.closeClient(owner2));
+        Assertions.assertTrue(bank.closeClient(coowner));
     }
 }

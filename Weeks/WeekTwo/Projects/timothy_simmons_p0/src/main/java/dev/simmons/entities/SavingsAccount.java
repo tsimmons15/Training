@@ -57,8 +57,23 @@ public class SavingsAccount implements Account{
     }
 
     @Override
+    public List<Client> getOwners() {
+        return this.owners;
+    }
+
+    @Override
+    public void setOwners(List<Client> owners) {
+        this.owners = owners;
+    }
+
+    @Override
     public AccountType getType() {
         return type;
+    }
+
+    @Override
+    public String getDiagnostics() {
+        return "[" + getType().name() + "](id=" + id + ", " + this.balance + ")";
     }
 
     @Override

@@ -1,6 +1,6 @@
 package dev.simmons.utilities.lists;
 
-public interface List<T> {
+public interface List<T> extends Iterable<T> {
     boolean isEmpty();
     int length();
     void add(T item);
