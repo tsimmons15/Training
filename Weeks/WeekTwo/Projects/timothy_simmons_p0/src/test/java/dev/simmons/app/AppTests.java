@@ -1,24 +1,36 @@
 package dev.simmons.app;
 
+import dev.simmons.entities.Client;
+import dev.simmons.service.Bank;
+import dev.simmons.service.Banking;
+import dev.simmons.utilities.hashing.HashUtil;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class AppTests {
-    /*@Test
+    @Test
     public void loginClient() {
+        Bank bank = new Banking();
+
+        Client client = new Client();
+        client.setClientName("name");
+        client.setClientUsername("namename");
+        client.hashClientPassword("usingname");
+        Assertions.assertTrue(bank.registerClient(client));
+
+        Client other = new Client();
+        other.setClientName("othername");
+        other.setClientUsername("othername");
+        other.hashClientPassword("otherPassword");
+        Assertions.assertTrue(bank.registerClient(other));
+
+        String invalidUsername = "doesntexist";
+
         String username = client.getClientUsername();
-        String wrongUsername = "doesntexist";
-        String password = HashUtil.hashSaltedString("testing1", client.getClientSalt());
-        Assertions.assertNotEquals("testing1", password);
-        Assertions.assertEquals(password, client.getClientPassword());
-        String wrongPassword = HashUtil.hashSaltedString("TeStInG1", client.getClientSalt());
-        Assertions.assertNotEquals("TeStInG1", wrongPassword);
-        Assertions.assertNotEquals(wrongPassword, password);
 
-        Client correct = clientDAO.getClient(username);
-        Assertions.assertEquals(correct, client);
-        Assertions.assertTrue(client.getClientPassword().equals(correct.getClientPassword()));
 
-        Client incorrect = clientDAO.getClient(wrongUsername);
-        Assertions.assertNull(incorrect);
-    }*/
+
+        Assertions.assertTrue(bank.closeClient(client));
+        Assertions.assertTrue(bank.closeClient(other));
+    }
 }

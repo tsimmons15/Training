@@ -13,6 +13,7 @@ public interface Bank {
     List<Client> getOwners(int accountId);
     Client getClient(int clientId);
     Client lookupClient(Client client);
+    Client lookupClient(String username);
     Account getAccount(int accountId);
 
     boolean registerClient(Client client);

@@ -74,11 +74,20 @@ public class Banking implements Bank{
 
     @Override
     public Client lookupClient(Client client) {
-        if (client == null || client.getClientUsername().length() > 0) {
+        if (client == null || client.getClientUsername().length() <= 0) {
             return null;
         }
 
-        return clientDAO.getClient(client.getClientUsername());
+        return lookupClient(client.getClientUsername());
+    }
+
+    @Override
+    public Client lookupClient(String username) {
+        if (username == null || username.length() <= 0) {
+            return null;
+        }
+
+        return clientDAO.getClient(username);
     }
 
     @Override
