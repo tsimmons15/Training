@@ -83,4 +83,31 @@ public class ListTests {
 
         Assertions.assertFalse(names.remove("A"));
     }
+
+    @Test
+    public void emptyListIterator() {
+        List<String> empty = new LinkedList<>();
+        for(String s : empty) {
+            System.out.println(s);
+        }
+    }
+
+    @Test
+    public void listIterator() {
+        List<String> string = new LinkedList<>();
+        string.add("A");
+        string.add("A");
+        string.add("A");
+        string.add("A");
+        string.add("A");
+        string.add("A");
+        string.add("A");
+        string.add("A");
+        int i = 0;
+        for(String s : string) {
+            Assertions.assertEquals("A", s);
+            i++;
+        }
+        Assertions.assertEquals(8, i);
+    }
 }

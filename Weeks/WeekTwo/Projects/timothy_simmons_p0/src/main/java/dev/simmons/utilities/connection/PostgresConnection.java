@@ -15,7 +15,7 @@ public class PostgresConnection {
 
     public static Connection getConnection() {
         try {
-            return DriverManager.getConnection(urlLocal, username, password);
+            return DriverManager.getConnection(urlAWS, username, password);
         } catch (SQLException e) {
             Logger.log(Logger.Level.WARNING, e);
             return null;

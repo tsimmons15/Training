@@ -106,6 +106,16 @@ public class Banking implements Bank{
     }
 
     @Override
+    public List<Account> getAccountsSolelyOwned(int clientId) {
+        return aoDAO.getAccountsSolelyOwned(clientId);
+    }
+
+    @Override
+    public List<Account> getAccountsSolelyOwned(Client client) {
+        return getAccountsSolelyOwned(client.getClientId());
+    }
+
+    @Override
     public boolean registerClient(Client client) {
         if (client == null) {
             return false;

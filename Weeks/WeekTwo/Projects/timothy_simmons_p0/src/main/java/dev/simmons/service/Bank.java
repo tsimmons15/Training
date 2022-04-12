@@ -18,6 +18,10 @@ public interface Bank {
     List<Account> getFullAccountInfo(int clientId);
     List<Account> getFullAccountInfo();
 
+    List<Account> getAccountsSolelyOwned(int clientId);
+    List<Account> getAccountsSolelyOwned(Client client);
+
+
     boolean registerClient(Client client);
     boolean createAccount(Account account, Client owner);
     boolean addOwner(Account account, Client owner);

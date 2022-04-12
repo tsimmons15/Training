@@ -21,6 +21,11 @@ public class Client {
         clientSalt = new byte[16];
         Random rand = new Random();
         rand.nextBytes(clientSalt);
+        /*for(int i = 0; i < clientSalt.length; i++) {
+            if (clientSalt[i] < 0) {
+                clientSalt[i] *= -1;
+            }
+        }*/
     }
 
     public int getClientId() {

@@ -7,6 +7,7 @@ import dev.simmons.service.Banking;
 import dev.simmons.utilities.hashing.HashUtil;
 import dev.simmons.utilities.lists.List;
 import dev.simmons.utilities.logging.Logger;
+import sun.rmi.runtime.Log;
 
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -26,10 +27,17 @@ public class App {
             switch (choice) {
                 case 1: // Login to existing account
                     Client curr = loginClient();
+                    if (curr == null) {
+                        continue;
+                    }
                     userMenu(curr);
                     break;
                 case 2: // New User
-                    registerClient();
+                    curr = registerClient();
+                    if (curr == null) {
+                        continue;
+                    }
+                    userMenu(curr);
                     break;
                 case 3: // Contact Info!
                     System.out.println("We would love to hear from you!");
@@ -50,6 +58,25 @@ public class App {
         } while (choice != 4);
     }
 
+    private static int mainMenuPrompt() {
+        int choice = -1;
+
+        do {
+            System.out.println("1.) Login to existing account!");
+            System.out.println("2.) Create new account!");
+            System.out.println("3.) Contact Us!");
+            System.out.println("4.) Exit");
+            System.out.print("> ");
+            try {
+                choice = Integer.parseInt(in.nextLine());
+            } catch (NoSuchElementException nsee) {
+                System.out.println("Oops! Please enter a valid option!");
+            }
+        } while (choice < 1 || choice > 4);
+
+        return choice;
+    }
+
     public static void userMenu(Client client) {
         int choice = -1;
         do {
@@ -63,29 +90,21 @@ public class App {
                     showAccountDetails(client);
                     break;
                 case 3:
+                    client = closeClient(client);
+                    if (client == null) {
+                        return;
+                    }
+                    break;
+                case 4:
+                    closeAccount(client);
+                    break;
+                case 5:
                     handleTransaction(client);
+                    break;
             }
-        } while (choice != 4);
+        } while (choice != 6);
     }
 
-    private static int mainMenuPrompt() {
-        int choice = -1;
-
-        do {
-            System.out.println("1.) Login to existing account!");
-            System.out.println("2.) Create new account!");
-            System.out.println("3.) Contact Us!");
-            System.out.println("4.) Exit");
-            System.out.print("> ");
-            try {
-                choice = in.nextInt();
-            } catch (NoSuchElementException nsee) {
-                System.out.println("Oops! Please enter a valid option!");
-            }
-        } while (choice < 1 || choice > 3);
-
-        return choice;
-    }
     private static int userMenuPrompt(Client client) {
         int choice = -1;
 
@@ -93,20 +112,22 @@ public class App {
         do {
             System.out.println("1.) Create Account!");
             System.out.println("2.) View Account Details!");
-            System.out.println("3.) Transactions!");
-            System.out.println("4.) Return");
+            System.out.println("3.) Close All Accounts");
+            System.out.println("4.) Close an Account");
+            System.out.println("5.) Transactions!");
+            System.out.println("6.) Return");
             System.out.print("> ");
             try {
-                choice = in.nextInt();
+                choice = Integer.parseInt(in.nextLine());
             } catch (NoSuchElementException nsee) {
                 System.out.println("Oops! Please enter a valid option!");
             }
-        } while (choice < 1 || choice > 4);
+        } while (choice < 1 || choice > 6);
 
         return choice;
     }
 
-    public static boolean registerClient() {
+    public static Client registerClient() {
         Client client = new Client();
         System.out.print("First, enter your name: ");
         String name = "";
@@ -151,9 +172,137 @@ public class App {
         } else {
             System.out.println("Oops! Something went wrong. Please see an associate for help.");
             Logger.log(Logger.Level.INFO, "Issue creating user for: " + client.getDiagnostics());
+            return null;
         }
 
-        return result;
+        return client;
+    }
+
+    public static Client closeClient(Client client) {
+        System.out.print("We're sure sorry to see you go! Are you sure you wish to close out your accounts? [Y/N] ");
+        String cont = "";
+        do {
+            try {
+                cont = in.nextLine();
+            } catch (NoSuchElementException nsee) {
+                System.out.println("Oops! Please just [Y/N] on whether you want to close out all your accounts.");
+            }
+        } while (!cont.startsWith("y") && !cont.startsWith("n"));
+
+        if (cont.startsWith("n")) {
+            System.out.println("Phew! That was scary! Thank you for reconsidering!");
+            return client;
+        }
+
+        System.out.println("We're sorry it has to end this way. Please let us know if there was anything we could have done better!");
+        List<Account> accounts = bank.getAccountsSolelyOwned(client);
+
+        if (accounts.length() <= 0) {
+            if (bank.closeClient(client)) {
+                System.out.println("Well, it was fun while it lasted...");
+                Logger.log(Logger.Level.INFO, "Client account closed: " + client.getDiagnostics());
+                return null;
+            } else {
+                System.out.println("Oops! Something went wrong! Please see an associate for assistance!");
+                Logger.log(Logger.Level.WARNING, "Unable to close account for client " + client.getDiagnostics());
+            }
+        }
+
+        double total = 0;
+        for (Account account : accounts) {
+            total += account.getBalance();
+        }
+        System.out.println("Regardless, no hard feelings. After completing, you will receive $" + total + " back.");
+        System.out.print("Continue? [Y/N] ");
+        do {
+            try {
+                cont = in.nextLine();
+            } catch (NoSuchElementException nsee) {
+                System.out.println("Oops! Please just [Y/N] on whether you want to continue closing your accounts.");
+            }
+        } while (!cont.startsWith("y") && !cont.startsWith("n"));
+
+        if (cont.startsWith("y")) {
+            if (bank.closeClient(client)) {
+                System.out.println("Well, it was fun while it lasted...");
+                Logger.log(Logger.Level.INFO, "Client account closed: " + client.getDiagnostics());
+                return null;
+            } else {
+                System.out.println("Oops! Something went wrong! Please see an associate for assistance!");
+                Logger.log(Logger.Level.WARNING, "Unable to close account for client " + client.getDiagnostics());
+            }
+        }
+
+        return client;
+    }
+
+    public static void closeAccount(Client client) {
+        List<Account> accounts = bank.getAccountsSolelyOwned(client);
+        if (accounts.length() <= 0) {
+            System.out.println("Wait... You haven't got any accounts, yet!");
+            return;
+        }
+
+        System.out.println("Which of the following accounts would you like to close out?");
+        for (int i = 0; i < accounts.length(); i++) {
+            System.out.println((i+1) + ".) " + accounts.get(i));
+        }
+        int index = 0;
+        do {
+            try {
+                index = Integer.parseInt(in.nextLine());
+            } catch (NoSuchElementException | NumberFormatException nsee) {
+                System.out.println("Oops! Make sure you enter a value from above!");
+            }
+        } while (index < 0 && index >= accounts.length());
+        Account removed = accounts.get(index-1);
+        System.out.println("You'll receive $" + removed.getBalance() + " back for closing this account.");
+        System.out.print("Are you sure you wish to close out this account? [Y/N] ");
+        String cont = "";
+        do {
+            try {
+                cont = in.nextLine();
+            } catch (NoSuchElementException nsee) {
+                System.out.println("Oops! Please just [Y/N] on whether you want to close out all your accounts.");
+            }
+        } while (!cont.startsWith("y") && !cont.startsWith("n"));
+
+        if (bank.closeAccount(removed)) {
+            accounts.remove(index-1);
+            handleClosedAccountTransfer(accounts, removed.getBalance());
+            Logger.log(Logger.Level.INFO, "Account " + removed.getDiagnostics() +
+                    " for client " + client.getDiagnostics() + ".");
+        } else {
+            System.out.println("Oops! We were unable to close out the account. Please see an associate for assistance!");
+            Logger.log(Logger.Level.WARNING, "Unable to close out account " +
+                    removed.getDiagnostics() + " owned by client " + client.getDiagnostics());
+        }
+
+    }
+
+    public static void handleClosedAccountTransfer(List<Account> accounts, double amount) {
+        int choice = 0;
+        do {
+            for(int i = 0; i < accounts.length(); i++) {
+                System.out.println((i+1) + ".) " + accounts.get(i));
+            }
+            System.out.print("To which account would you like to deposit? ");
+            try {
+                choice = Integer.parseInt(in.nextLine());
+            } catch (NoSuchElementException | NumberFormatException nsee) {
+                System.out.println("Oops! Please select one of the above options.");
+            }
+        } while (choice < 1 || choice >= accounts.length());
+
+        System.out.println("Excellent!");
+
+        Account account = accounts.get(choice-1);
+
+        if (bank.deposit(account, amount)) {
+            Logger.log(Logger.Level.INFO, "Transfer from closed account to " + account.getDiagnostics() + " of $" + amount);
+        } else {
+            Logger.log(Logger.Level.WARNING, "Failed transfer from closed account to " + account.getDiagnostics() + " of $" + amount);
+        }
     }
 
     public static Client loginClient() {
@@ -168,7 +317,7 @@ public class App {
             candidate = bank.lookupClient(username);
             // Possibly try to rework this logic to handle 3 attempts of the same username?
             // Put history in a map -> login attempts?
-            if (invalidAttempt > 3) {
+            if (invalidAttempt > 2) {
                 System.out.println("Please change your password, or see an associate for help with your account.");
                 Logger.log(Logger.Level.WARNING, "Too many invalid attempts on account using " + username);
                 candidate = null;
@@ -187,7 +336,7 @@ public class App {
                 candidate = null;
                 continue;
             }
-        } while (candidate == null && invalidAttempt <= 3);
+        } while (candidate == null);
 
         return candidate;
     }
@@ -205,8 +354,8 @@ public class App {
             System.out.print("> ");
 
             try {
-                choice = in.nextInt();
-            } catch (NoSuchElementException nsee) {
+                choice = Integer.parseInt(in.nextLine());
+            } catch (NoSuchElementException | NumberFormatException nsee) {
                 System.out.println("Oops! Please enter one of the valid values.");
                 choice = -1;
             }
@@ -218,8 +367,8 @@ public class App {
             System.out.println("Great! Your " + account.getType().name() + " account is all set!");
         } else {
             System.out.println("Oops! Something went wrong... Please see an associate for assistance!");
-            Logger.log(Logger.Level.INFO, "Issue creating account: " + account.getDiagnostics());
-            Logger.log(Logger.Level.INFO, "Issue creating account for: " + client.getDiagnostics());
+            Logger.log(Logger.Level.INFO, "Issue creating account: " + account.getDiagnostics() +
+                    " for: " + client.getDiagnostics());
         }
 
         return result;
@@ -232,7 +381,10 @@ public class App {
         }
 
         List<Account> accounts = bank.getAccountInfo(client.getClientId());
-
+        if (accounts != null && accounts.length() <= 0) {
+            System.out.println("Sorry, you don't yet have any accounts!");
+            return;
+        }
         System.out.println(String.format("Accounts for: %s (%s)", client.getClientName(), client.getClientUsername()));
         for (Account a : accounts) {
             System.out.println(a);
@@ -254,6 +406,8 @@ public class App {
                 case 3:
                     handleTransfer(client);
                     break;
+                case 4:
+                    return;
             }
             System.out.print("Another transaction? [Y/N] ");
             cont = in.nextLine().toLowerCase();
@@ -269,8 +423,8 @@ public class App {
             System.out.println("> ");
 
             try {
-                choice = in.nextInt();
-            } catch(NoSuchElementException nsee) {
+                choice = Integer.parseInt(in.nextLine());
+            } catch (NoSuchElementException | NumberFormatException nsee) {
                 System.out.println("Oops! Please enter one of the available choices!");
             }
         } while (choice < 1 || choice > 4);
@@ -280,6 +434,10 @@ public class App {
 
     private static void handleWithdraw(Client client) {
         List<Account> accounts = bank.getAccountInfo(client.getClientId());
+        if (accounts.length() <= 0) {
+            System.out.println("Wait... You have no accounts with us, yet!");
+            return;
+        }
         int choice = 0;
         do {
             for(int i = 0; i < accounts.length(); i++) {
@@ -287,11 +445,11 @@ public class App {
             }
             System.out.print("From which account would you like to withdraw? ");
             try {
-                choice = in.nextInt();
-            } catch (NoSuchElementException nsee) {
+                choice = Integer.parseInt(in.nextLine());
+            } catch (NoSuchElementException | NumberFormatException nsee) {
                 System.out.println("Oops! Please select one of the above options.");
             }
-        } while (choice < 1 || choice > accounts.length());
+        } while (choice < 1 || choice >= accounts.length());
 
         System.out.println("Excellent!");
 
@@ -301,17 +459,25 @@ public class App {
             System.out.println(account);
             System.out.print("How much would you like to withdraw? $");
             try {
-                amount = in.nextDouble();
-            } catch (NoSuchElementException nsee) {
+                amount = Double.parseDouble(in.nextLine());
+            } catch (NoSuchElementException | NumberFormatException nsee) {
                 System.out.println("Oops! Make sure you enter a dollar amount!");
             }
         } while (amount < 0 && amount > account.getBalance());
 
-        bank.withdraw(account, amount);
+        if (bank.withdraw(account, amount)) {
+            Logger.log(Logger.Level.INFO, "Withdraw from " + account.getDiagnostics() + " of $" + amount + " completed.");
+        } else {
+            Logger.log(Logger.Level.WARNING, "Failed withdraw from " + account.getDiagnostics() + " of $" + amount + ".");
+        }
     }
 
     private static void handleDeposit(Client client) {
         List<Account> accounts = bank.getAccountInfo(client.getClientId());
+        if (accounts.length() <= 0) {
+            System.out.println("Wait... You don't have any accounts with us, yet!");
+            return;
+        }
         int choice = 0;
         do {
             for(int i = 0; i < accounts.length(); i++) {
@@ -319,11 +485,11 @@ public class App {
             }
             System.out.print("To which account would you like to deposit? ");
             try {
-                choice = in.nextInt();
-            } catch (NoSuchElementException nsee) {
+                choice = Integer.parseInt(in.nextLine());
+            } catch (NoSuchElementException | NumberFormatException nsee) {
                 System.out.println("Oops! Please select one of the above options.");
             }
-        } while (choice < 1 || choice > accounts.length());
+        } while (choice < 1 || choice >= accounts.length());
 
         System.out.println("Excellent!");
 
@@ -333,16 +499,79 @@ public class App {
             System.out.println(account);
             System.out.print("How much would you like to deposit? $");
             try {
-                amount = in.nextDouble();
-            } catch (NoSuchElementException nsee) {
+                amount = Double.parseDouble(in.nextLine());
+            } catch (NoSuchElementException | NumberFormatException nsee) {
                 System.out.println("Oops! Make sure you enter a dollar amount!");
             }
         } while (amount < 0 && amount > account.getBalance());
 
-        bank.deposit(account, amount);
+        if (bank.deposit(account, amount)) {
+            Logger.log(Logger.Level.INFO, "Deposit to " + account.getDiagnostics() + " of $" + amount + " completed.");
+        } else {
+            Logger.log(Logger.Level.WARNING, "Failed deposit to " + account.getDiagnostics() + " of $" + amount + ".");
+        }
     }
 
     private static void handleTransfer(Client client) {
+        List<Account> accounts = bank.getFullAccountInfo();
+        List<Account> ownedAccounts = bank.getAccountInfo(client.getClientId());
+        if (accounts.length() <= 1 && ownedAccounts.length() <= 1) {
+            System.out.println("Oops! There isn't a reasonable transfer you can make...!");
+            return;
+        }
 
+        if (ownedAccounts.length() <= 0) {
+            System.out.println("Wait... You don't have any accounts with us, yet!");
+            return;
+        }
+        int choice = 0;
+        do {
+            for(int i = 0; i < ownedAccounts.length(); i++) {
+                System.out.println((i+1) + ".) " + ownedAccounts.get(i));
+            }
+            System.out.print("From which account would you like to transfer? ");
+            try {
+                choice = Integer.parseInt(in.nextLine());
+            } catch (NoSuchElementException | NumberFormatException nsee) {
+                System.out.println("Oops! Please select one of the above options.");
+            }
+        } while (choice < 1 || choice >= ownedAccounts.length());
+
+        System.out.println("Excellent!");
+
+        Account account = ownedAccounts.get(choice-1);
+        double amount = -1;
+        do {
+            System.out.println(account);
+            System.out.print("How much would you like to transfer? $");
+            try {
+                amount = Double.parseDouble(in.nextLine());
+            } catch (NoSuchElementException | NumberFormatException nsee) {
+                System.out.println("Oops! Make sure you enter a dollar amount!");
+            }
+        } while (amount < 0 && amount > account.getBalance());
+
+
+        choice = -1;
+        int index = 0;
+        do {
+            System.out.print("To which account would you like to transfer? ");
+            for(int i = index = 0; i < accounts.length(); i++) {
+                if (account.equals(accounts.get(i))) {
+                    continue;
+                }
+                index++;
+                System.out.println(index + ".) " + accounts.get(i));
+            }
+
+
+        } while (choice < 0 && choice >= accounts.length());
+        Account toAccount = accounts.get(index-1);
+
+        if (bank.transfer(account, toAccount, amount)) {
+            Logger.log(Logger.Level.INFO, "Transfer from " + account.getDiagnostics() + " to " + toAccount.getDiagnostics() + " of $" + amount + ".");
+        } else {
+            Logger.log(Logger.Level.WARNING, "Failed transfer from " + account.getDiagnostics() + " to " + toAccount.getDiagnostics() + " of $" + amount + ".'");
+        }
     }
 }
