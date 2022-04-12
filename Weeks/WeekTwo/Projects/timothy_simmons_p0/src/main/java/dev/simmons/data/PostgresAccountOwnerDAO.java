@@ -100,6 +100,14 @@ public class PostgresAccountOwnerDAO implements AccountOwnerDAO{
         return getAccounts(client.getClientId());
     }
 
+    /**
+     * Gets all accounts, including populating the owner list, for a given client.
+     *
+     * Ideally, would get the full owner list (including co-owners), but currently
+     *  I believe it's only returning the single owner in the where clause.
+     * @param clientId The client_id whose accounts we're interested in.
+     * @return The list of accounts if found, an empty list otherwise.
+     */
     @Override
     public List<Account> getFullAccountInfo(int clientId) {
         try (Connection conn = PostgresConnection.getConnection()) {
@@ -225,11 +233,6 @@ public class PostgresAccountOwnerDAO implements AccountOwnerDAO{
         }
 
         return null;
-    }
-
-    @Override
-    public List<Account> getAccountsSolelyOwned(Client client) {
-        return getAccountsSolelyOwned(client.getClientId());
     }
 
     @Override

@@ -18,7 +18,7 @@ public class AppTests {
         client.setClientUsername("namename");
         client.hashClientPassword("usingname");
         Assertions.assertTrue(bank.registerClient(client));
-        Client received = bank.lookupClient("namename");
+        Client received = bank.getClient("namename");
         Assertions.assertNotNull(received);
         Assertions.assertEquals(client, received);
         Assertions.assertEquals(clientSalt.length, received.getClientSalt().length);
@@ -32,7 +32,7 @@ public class AppTests {
         other.setClientUsername("othername");
         other.hashClientPassword("otherPassword");
         Assertions.assertTrue(bank.registerClient(other));
-        Client otherReceived = bank.lookupClient("othername");
+        Client otherReceived = bank.getClient("othername");
         Assertions.assertNotNull(otherReceived);
         Assertions.assertEquals(other, otherReceived);
         Assertions.assertEquals(otherSalt.length, otherReceived.getClientSalt().length);
@@ -41,7 +41,7 @@ public class AppTests {
         }
         String invalidUsername = "doesntexist";
 
-        Assertions.assertNull(bank.lookupClient(invalidUsername));
+        Assertions.assertNull(bank.getClient(invalidUsername));
         Assertions.assertEquals(HashUtil.hashSaltedString("usingname", clientSalt),
                 received.getClientPassword());
         Assertions.assertEquals(HashUtil.hashSaltedString("otherPassword", otherSalt),

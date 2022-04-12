@@ -48,12 +48,18 @@ public class CheckingAccount implements Account{
 
     @Override
     public boolean withdraw(double amount) {
-        if (amount < 0 || amount > this.balance) {
+        double newBalance = calculateAmountAfterWithdraw(amount);
+        if (amount < 0 || newBalance < 0) {
             return false;
         }
 
-        this.balance -= amount;
+        this.balance = calculateAmountAfterWithdraw(amount);
         return true;
+    }
+
+    @Override
+    public double calculateAmountAfterWithdraw(double amount) {
+        return this.balance - amount;
     }
 
     @Override

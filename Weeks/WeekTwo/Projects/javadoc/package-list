@@ -1,0 +1,9 @@
+dev.simmons
+dev.simmons.data
+dev.simmons.entities
+dev.simmons.service
+dev.simmons.utilities.connection
+dev.simmons.utilities.hashing
+dev.simmons.utilities.lists
+dev.simmons.utilities.logging
+dev.simmons.utilities.sets

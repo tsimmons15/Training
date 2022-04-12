@@ -48,12 +48,18 @@ public class CDAccount implements Account{
 
     @Override
     public boolean withdraw(double amount) {
-        if (amount < 0 || amount > this.balance) {
+        double newBalance = calculateAmountAfterWithdraw(amount);
+        if (amount < 0 || newBalance < 0) {
             return false;
         }
 
-        this.balance -= amount * (1.00 + type.interest * 1.5);
+        this.balance = newBalance;
         return true;
+    }
+
+    @Override
+    public double calculateAmountAfterWithdraw(double amount) {
+        return this.balance - amount * (1.00 + type.interest * 1.5);
     }
 
     @Override
