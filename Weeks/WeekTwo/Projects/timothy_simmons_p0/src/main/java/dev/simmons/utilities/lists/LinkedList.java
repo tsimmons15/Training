@@ -157,13 +157,14 @@ public class LinkedList<T> implements List<T> {
 
             @Override
             public boolean hasNext() {
-                return curr.next != null;
+                return curr != null;
             }
 
             @Override
             public T next() {
+                T current = curr.data;
                 curr = curr.next;
-                return curr.data;
+                return current;
             }
 
             @Override

@@ -13,22 +13,39 @@ public class AppTests {
         Bank bank = new Banking();
 
         Client client = new Client();
+        byte[] clientSalt = client.getClientSalt();
         client.setClientName("name");
         client.setClientUsername("namename");
         client.hashClientPassword("usingname");
         Assertions.assertTrue(bank.registerClient(client));
+        Client received = bank.lookupClient("namename");
+        Assertions.assertNotNull(received);
+        Assertions.assertEquals(client, received);
+        Assertions.assertEquals(clientSalt.length, received.getClientSalt().length);
+        for (int i = 0; i < clientSalt.length; i++) {
+            Assertions.assertEquals(clientSalt[i], received.getClientSalt()[i]);
+        }
 
         Client other = new Client();
+        byte[] otherSalt = other.getClientSalt();
         other.setClientName("othername");
         other.setClientUsername("othername");
         other.hashClientPassword("otherPassword");
         Assertions.assertTrue(bank.registerClient(other));
-
+        Client otherReceived = bank.lookupClient("othername");
+        Assertions.assertNotNull(otherReceived);
+        Assertions.assertEquals(other, otherReceived);
+        Assertions.assertEquals(otherSalt.length, otherReceived.getClientSalt().length);
+        for (int i = 0; i < otherSalt.length; i++) {
+            Assertions.assertEquals(otherSalt[i], otherReceived.getClientSalt()[i]);
+        }
         String invalidUsername = "doesntexist";
 
-        String username = client.getClientUsername();
-
-
+        Assertions.assertNull(bank.lookupClient(invalidUsername));
+        Assertions.assertEquals(HashUtil.hashSaltedString("usingname", clientSalt),
+                received.getClientPassword());
+        Assertions.assertEquals(HashUtil.hashSaltedString("otherPassword", otherSalt),
+                otherReceived.getClientPassword());
 
         Assertions.assertTrue(bank.closeClient(client));
         Assertions.assertTrue(bank.closeClient(other));

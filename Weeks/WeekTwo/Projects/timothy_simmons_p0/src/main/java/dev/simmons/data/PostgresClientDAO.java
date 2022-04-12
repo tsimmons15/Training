@@ -5,7 +5,7 @@ import dev.simmons.utilities.logging.Logger;
 import dev.simmons.utilities.connection.PostgresConnection;
 
 import java.sql.*;
-import java.util.Base64;
+import org.postgresql.util.Base64;
 
 public class PostgresClientDAO implements ClientDAO{
     @Override
@@ -17,7 +17,7 @@ public class PostgresClientDAO implements ClientDAO{
             statement.setString(1, client.getClientName());
             statement.setString(2, client.getClientUsername());
             statement.setString(3, client.getClientPassword());
-            statement.setString(4, Base64.getEncoder().encodeToString(client.getClientSalt()));
+            statement.setString(4, Base64.encodeBytes(client.getClientSalt()));
 
             int updated = statement.executeUpdate();
             if (updated != 1) {
@@ -56,7 +56,7 @@ public class PostgresClientDAO implements ClientDAO{
             client.setClientId(rs.getInt("client_id"));
             client.setClientName(rs.getString("client_name"));
             client.setClientPassword(rs.getString("client_password"));
-            client.setClientSalt(rs.getString("client_salt").getBytes());
+            client.setClientSalt(Base64.decode(rs.getString("client_salt")));
 
             return client;
         } catch (SQLException | NullPointerException npe) {
@@ -83,8 +83,9 @@ public class PostgresClientDAO implements ClientDAO{
             rs.next();
             client.setClientId(rs.getInt("client_id"));
             client.setClientName(rs.getString("client_name"));
+            client.setClientUsername(rs.getString("client_username"));
             client.setClientPassword(rs.getString("client_password"));
-            client.setClientSalt(rs.getBytes("client_salt"));
+            client.setClientSalt(Base64.decode(rs.getString("client_salt")));
 
             return client;
         } catch (SQLException | NullPointerException npe) {
@@ -102,7 +103,7 @@ public class PostgresClientDAO implements ClientDAO{
             statement.setString(1, newClient.getClientName());
             statement.setString(2, newClient.getClientUsername());
             statement.setString(3, newClient.getClientPassword());
-            statement.setString(4, Base64.getEncoder().encodeToString(newClient.getClientSalt()));
+            statement.setString(4, Base64.encodeBytes(newClient.getClientSalt()));
             statement.setInt(5, newClient.getClientId());
 
             int updated = statement.executeUpdate();
