@@ -1,7 +1,6 @@
 package dev.simmons.service;
 
 import dev.simmons.entities.Account;
-import dev.simmons.entities.CheckingAccount;
 import dev.simmons.entities.Client;
 import dev.simmons.utilities.lists.List;
 import org.junit.jupiter.api.Assertions;
@@ -88,7 +87,7 @@ public class BankTests {
 
         // Client is leaving, so should close out accounts (if they are the only owners)
         bank.closeClient(client);
-        Assertions.assertNull(bank.lookupClient(client));
+        Assertions.assertNull(bank.getClient(client));
         Assertions.assertEquals(0, bank.getAccountInfo(client.getClientId()).length());
     }
 
@@ -123,7 +122,7 @@ public class BankTests {
         Assertions.assertEquals(expected, account.getBalance(), .01);
 
         bank.closeClient(client);
-        Assertions.assertNull(bank.lookupClient(client));
+        Assertions.assertNull(bank.getClient(client));
         Assertions.assertEquals(0, bank.getAccountInfo(client.getClientId()).length());
     }
 
@@ -158,7 +157,7 @@ public class BankTests {
         Assertions.assertEquals(expected, account.getBalance(), .01);
 
         bank.closeClient(client);
-        Assertions.assertNull(bank.lookupClient(client));
+        Assertions.assertNull(bank.getClient(client));
         Assertions.assertEquals(0, bank.getAccountInfo(client.getClientId()).length());
     }
 

@@ -6,9 +6,9 @@ import dev.simmons.entities.Client;
 import dev.simmons.utilities.lists.List;
 
 public class Banking implements Bank{
-    private ClientDAO clientDAO;
-    private AccountDAO accountDAO;
-    private AccountOwnerDAO aoDAO;
+    private final ClientDAO clientDAO;
+    private final AccountDAO accountDAO;
+    private final AccountOwnerDAO aoDAO;
 
     public Banking() {
         clientDAO = new PostgresClientDAO();
@@ -73,16 +73,19 @@ public class Banking implements Bank{
     }
 
     @Override
-    public Client lookupClient(Client client) {
-        if (client == null || client.getClientUsername().length() <= 0) {
+    public Client getClient(Client client) {
+        if (client == null || client.getClientUsername().length() <= 0 || client.getClientId() <= 0) {
             return null;
         }
 
-        return lookupClient(client.getClientUsername());
+        if (client.getClientUsername().length() > 0) {
+            return getClient(client.getClientUsername());
+        }
+        return getClient(client.getClientId());
     }
 
     @Override
-    public Client lookupClient(String username) {
+    public Client getClient(String username) {
         if (username == null || username.length() <= 0) {
             return null;
         }
@@ -95,10 +98,10 @@ public class Banking implements Bank{
         return accountDAO.getAccount(accountId);
     }
 
-    @Override
+    /*@Override
     public List<Account> getFullAccountInfo(int clientId) {
         return aoDAO.getFullAccountInfo(clientId);
-    }
+    }*/
 
     @Override
     public List<Account> getFullAccountInfo() {
@@ -167,16 +170,11 @@ public class Banking implements Bank{
         }
 
         List<Account> accounts = aoDAO.getAccounts(client.getClientId());
-        List<Client> clients = null;
-        Account account = null;
+        Account account;
         boolean result = true;
         for(int i = 0; i < accounts.length(); i++) {
             account = accounts.get(i);
-            clients = aoDAO.getOwners(account.getId());
             result &= removeOwner(account, client);
-            if (clients.length() == 0) {
-                result &= accountDAO.deleteAccount(account);
-            }
         }
 
         result &= clientDAO.deleteClient(client);

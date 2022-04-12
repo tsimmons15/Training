@@ -168,7 +168,7 @@ public class AppCmdWIP {
     }
 
     private Client login(String username, String password) {
-        Client candidate = bank.lookupClient(username);
+        Client candidate = bank.getClient(username);
         if (candidate == null) {
             System.out.println("Unable to find a match! Please check your username and password!");
             return null;
