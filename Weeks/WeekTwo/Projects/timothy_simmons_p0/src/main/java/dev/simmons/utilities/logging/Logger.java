@@ -1,7 +1,5 @@
 package dev.simmons.utilities.logging;
 
-import com.sun.istack.internal.NotNull;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -32,7 +30,7 @@ public class Logger {
      * @param level The log level for this line.
      * @param message The message to log.
      */
-    public static void log(@NotNull Level level, @NotNull String message) {
+    public static void log(Level level, String message) {
         // I was always told my imagination was my best quality.
         try {
             Path path = Paths.get(LOG_PATH);
@@ -49,7 +47,7 @@ public class Logger {
      * @param level The log level for this line.
      * @param ex The exception thrown to be logged.
      */
-    public static void log(@NotNull Level level, @NotNull Exception ex) {
+    public static void log(Level level, Exception ex) {
         log(level, ex.getMessage() + "\n" + Arrays.toString(ex.getStackTrace()));
     }
 }

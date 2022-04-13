@@ -89,6 +89,6 @@ public class CDAccount implements Account{
 
     @Override
     public String toString() {
-        return String.format("%d  $%.2f", this.id, this.balance);
+        return String.format("%d (%s) $%.2f", this.id, type.name(), this.balance);
     }
 }

@@ -322,7 +322,7 @@ public class App {
             candidate = bank.getClient(username);
             // Possibly try to rework this logic to handle 3 attempts of the same username?
             // Put history in a map -> login attempts?
-            if (invalidAttempt > 2) {
+            if (invalidAttempt > 1) {
                 System.out.println("Please change your password, or see an associate for help with your account.");
                 Logger.log(Logger.Level.WARNING, "Too many invalid attempts on account using " + username);
                 candidate = null;
