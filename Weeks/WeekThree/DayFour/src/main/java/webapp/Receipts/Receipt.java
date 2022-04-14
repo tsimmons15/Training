@@ -1,9 +1,11 @@
 package webapp.Receipts;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 
 public class Receipt {
+    private int id;
     private double price;
     private String description;
     private LocalDateTime timestamp;
@@ -16,6 +18,14 @@ public class Receipt {
         this.price = price;
         this.description = description;
         this.timestamp = timestamp;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public double getPrice() {
