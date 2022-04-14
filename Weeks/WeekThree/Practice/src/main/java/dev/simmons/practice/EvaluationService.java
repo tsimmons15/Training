@@ -20,7 +20,8 @@ public class EvaluationService {
      * @return
      */
     public String reverse(String string) {
-        return "";
+        // Courtesy other batchmates.
+        return string.chars().mapToObj(c -> (char)c+"").reduce("", (i,j) -> j + i);
     }
 
     /**
