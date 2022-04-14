@@ -155,12 +155,12 @@ public class Banking implements Bank{
             return result;
         }
 
-        return result & closeAccount(account);
+        return result & accountDAO.deleteAccount(account);
     }
 
     @Override
-    public boolean closeAccount(Account account) {
-        return accountDAO.deleteAccount(account);
+    public boolean closeAccount(Account account, Client client) {
+        return removeOwner(account, client);
     }
 
     @Override

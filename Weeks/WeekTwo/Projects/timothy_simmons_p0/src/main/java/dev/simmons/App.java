@@ -270,10 +270,12 @@ public class App {
 
         if (cont.startsWith("y")) {
             System.out.println("Closing account...");
-            if (bank.closeAccount(removed)) {
+            if (bank.closeAccount(removed, client)) {
                 accounts.remove(index - 1);
-                handleClosedAccountTransfer(accounts, removed.getBalance());
-                Logger.log(Logger.Level.INFO, "Account " + removed.getDiagnostics() +
+                if (accounts.length() != 0) {
+                    handleClosedAccountTransfer(accounts, removed.getBalance());
+                }
+                Logger.log(Logger.Level.INFO, "Account closed " + removed.getDiagnostics() +
                         " for client " + client.getDiagnostics() + ".");
             } else {
                 System.out.println("Oops! We were unable to close out the account. Please see an associate for assistance!");

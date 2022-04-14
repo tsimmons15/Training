@@ -129,9 +129,10 @@ public interface Bank {
     /**
      * Close out an account.
      * @param account The account objected containing at least the account_id of the account to be closed.
+     * @param client The client object containing at least the client_id of the owner of the account.
      * @return True if the account was successfully closed, false otherwise.
      */
-    boolean closeAccount(Account account);
+    boolean closeAccount(Account account, Client client);
 
     /**
      * Close out a client, remove their ownership of any accounts and closing out all solely owned accounts.
