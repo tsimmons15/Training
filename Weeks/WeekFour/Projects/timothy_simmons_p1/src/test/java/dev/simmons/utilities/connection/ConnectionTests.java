@@ -11,12 +11,11 @@ public class ConnectionTests {
     @Test
     public void canConnect() {
         try (Connection connection = PostgresConnection.getConnection()) {
+            Assertions.assertNotNull(connection);
             Assertions.assertEquals("expenses", connection.getCatalog());
             Assertions.assertNotNull(connection);
         } catch (SQLException se) {
             Assertions.fail(se.getMessage());
         }
-
-
     }
 }

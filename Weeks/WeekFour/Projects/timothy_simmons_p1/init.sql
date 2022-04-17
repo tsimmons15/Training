@@ -7,7 +7,7 @@ create table employee (
 create table expense (
 	expense_id serial primary key,
 	expense_amount bigint not null check(expense_amount > 0),
-	expense_approved varchar(8) not null,
+	expense_status varchar(8) not null,
 	expense_date bigint not null,
 	employee_issuer int
 );
@@ -16,3 +16,29 @@ alter table expense add constraint exp_employee_fk foreign key(employee_issuer) 
 
 --alter table expense drop column expense_amount;
 --alter table expense add column expense_amount float not null check(expense_amount > 0);
+
+create function checkExpenseStatus() 
+returns trigger
+language plpgsql
+as $$
+begin
+	if (old.expense_status != 'PENDING') then
+		raise exception 'Attempt to update a non-pending expense.';
+		return null;
+	end if;
+	return new;
+end; $$
+
+drop function checkexpensestatus;
+
+create trigger checkStatus before update on expense
+for each row
+execute function checkExpenseStatus();
+
+drop trigger checkStatus on expense;
+
+select * from employee;
+select * from expense;
+insert into expense (expense_status, expense_date, expense_amount) values (
+	'PENDING', 150, 1000
+);

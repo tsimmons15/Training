@@ -2,19 +2,38 @@ package dev.simmons.app;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import dev.simmons.data.PostgresEmployeeDAO;
+import dev.simmons.data.PostgresExpenseDAO;
+import dev.simmons.entities.Employee;
+import dev.simmons.entities.Expense;
 import dev.simmons.exceptions.ExpenseNotPendingException;
-import dev.simmons.exceptions.IncompleteEmployeeException;
-import dev.simmons.exceptions.IncompleteExpenseException;
 import dev.simmons.exceptions.NegativeExpenseException;
+import dev.simmons.service.ExpensesService;
+import dev.simmons.service.ExpensesServiceImpl;
 import io.javalin.Javalin;
 
 public class WebApp {
+    private static ExpensesService service;
     public static void main(String[] args) {
+        service = new ExpensesServiceImpl(new PostgresEmployeeDAO(), new PostgresExpenseDAO());
         Javalin server = Javalin.create();
         Gson gson = new GsonBuilder().create();
 
         server.post("/employees", ctx -> {
-            // createEmployee(employee);
+            Employee emp = gson.fromJson(ctx.body(), Employee.class);
+            if (emp == null) {
+                ctx.status(500);
+                ctx.result("{\"error\":\"Unable to parse the provided employee. Check the syntax: '" + ctx.body() + "'\"}");
+            } else {
+                Employee received = service.createEmployee(emp);
+                if (received == null) {
+                    ctx.status(500);
+                    ctx.result("{\"error\":\"Unable to save the provided employee: " + emp + "\"}");
+                } else {
+                    ctx.status(201);
+                    ctx.result("{\"result\":\"Created new employee, " + received.getId() + "\"}");
+                }
+            }
         });
 
         server.get("/employees", ctx -> {
@@ -32,8 +51,20 @@ public class WebApp {
         });
 
         server.post("/expenses", ctx -> {
-            // createExpense(expense);
-            // Will need to be passed employee id?
+            Expense exp = gson.fromJson(ctx.body(), Expense.class);
+            if (exp == null) {
+                ctx.status(500);
+                ctx.result("{\"error\":\"Unable to parse the provided expense. Check the syntax: '" + ctx.body() + "'\"}");
+            } else {
+                Expense received = service.createExpense(exp);
+                if (received == null) {
+                    ctx.status(500);
+                    ctx.result("{\"error\":\"Unable to save the provided expense: " + exp + "\"}");
+                } else {
+                    ctx.status(201);
+                    ctx.result("{\"result\":\"Created new employee, " + received.getId() + "\"}");
+                }
+            }
         });
         server.post("/employees/{index}/expenses", ctx -> {
             // Adds an expense for employee id={index}
@@ -52,7 +83,22 @@ public class WebApp {
         });
 
         server.put("/expenses/{index}", ctx -> {
-            // replaceExpense(index);
+            int index = Integer.parseInt(ctx.pathParam("index"));
+            Expense expense = gson.fromJson(ctx.body(), Expense.class);
+            if (expense == null) {
+                ctx.status(404);
+                ctx.result("{\"error\":\"Unable to parse the provided expense. Check the sent expense.\"}");
+            } else {
+                expense.setId(index);
+                Expense received = service.replaceExpense(expense);
+                if (received == null) {
+                    ctx.status(500);
+                    ctx.result("{\"error\":\"Was unable to update the provided expense: " + expense + ".\"}");
+                } else {
+                    ctx.status(201);
+                    ctx.result("{\"result\":\"Expense updated\"}");
+                }
+            }
         });
         server.patch("/expenses/{index}/approve", ctx -> {
             // approveExpense(index);
@@ -70,12 +116,6 @@ public class WebApp {
         });
         server.exception(NegativeExpenseException.class, (ex, ctx) -> {
             ctx.status(400); // One of the 400s since the user is making a mistake
-        });
-        server.exception(IncompleteEmployeeException.class, (ex, ctx) -> {
-            ctx.status(400);
-        });
-        server.exception(IncompleteExpenseException.class, (ex, ctx) -> {
-            ctx.status(400);
         });
 
 

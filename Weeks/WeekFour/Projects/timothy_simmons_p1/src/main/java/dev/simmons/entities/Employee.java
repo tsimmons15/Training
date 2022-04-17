@@ -57,4 +57,9 @@ public class Employee implements Comparable<Employee>{
     public int compareTo(@NotNull Employee o) {
         return Integer.compare(this.id, o.getId());
     }
+
+    @Override
+    public String toString() {
+        return "";
+    }
 }

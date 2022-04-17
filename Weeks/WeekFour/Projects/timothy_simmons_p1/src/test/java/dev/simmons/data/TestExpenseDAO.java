@@ -2,10 +2,12 @@ package dev.simmons.data;
 
 import dev.simmons.entities.Employee;
 import dev.simmons.entities.Expense;
-import dev.simmons.exceptions.IncompleteExpenseException;
+import dev.simmons.exceptions.ExpenseNotPendingException;
 import dev.simmons.exceptions.NegativeExpenseException;
 import org.junit.jupiter.api.*;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -26,8 +28,7 @@ public class TestExpenseDAO {
         Expense exp = new Expense();
         exp.setAmount(100);
         exp.setDate(100);
-        exp.setStatus(Expense.Status.APPROVED);
-        exp.setIssuer(emp.getId());
+        exp.setStatus(Expense.Status.PENDING);
 
         expense = expDao.createExpense(exp);
         Assertions.assertNotNull(expense);
@@ -93,6 +94,45 @@ public class TestExpenseDAO {
 
     @Test
     @Order(7)
+    public void replaceApprovedOrDeniedFails() {
+        final Expense approved = new Expense();
+        final Expense denied = new Expense();
+        approved.setDate(LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
+        denied.setDate(LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
+
+        approved.setIssuer(employee.getId());
+        denied.setIssuer(employee.getId());
+
+        approved.setAmount(10000);
+        denied.setAmount(10000);
+
+        approved.setStatus(Expense.Status.APPROVED);
+        denied.setStatus(Expense.Status.DENIED);
+
+        Expense received = expDao.createExpense(approved);
+        Assertions.assertNotNull(received);
+        approved.setId(received.getId());
+        received = expDao.createExpense(denied);
+        Assertions.assertNotNull(received);
+        denied.setId(received.getId());
+
+        Assertions.assertThrows(ExpenseNotPendingException.class, () -> {
+            approved.setAmount(0);
+            Assertions.assertNull(expDao.replaceExpense(approved));
+        }, "Was able to edit an approved expense.");
+
+        Assertions.assertThrows(ExpenseNotPendingException.class, () -> {
+            denied.setAmount(0);
+            Assertions.assertNull(expDao.replaceExpense(denied));
+        });
+
+        Assertions.assertTrue(expDao.deleteExpense(approved.getId()));
+        Assertions.assertTrue(expDao.deleteExpense(denied.getId()));
+        Assertions.assertNull(expDao.getExpenseById(approved.getId()));
+        Assertions.assertNull(expDao.getExpenseById(denied.getId()));
+    }
+    @Test
+    @Order(8)
     public void deleteExpense() {
         Assertions.assertTrue(expDao.deleteExpense(expense.getId()));
         Assertions.assertNull(expDao.getExpenseById(expense.getId()));
@@ -133,70 +173,5 @@ public class TestExpenseDAO {
         });
         Assertions.assertEquals(exp.getAmount(), expDao.getExpenseById(exp.getId()).getAmount());
         Assertions.assertTrue(expDao.deleteExpense(exp.getId()));
-    }
-
-    @Test
-    public void incompleteExpenseThrowsExceptionDuringInsert() {
-        // IncompleteExpenseException thrown if you try to insert without required fields
-        // Incomplete expense is not inserted.
-        Expense exp = new Expense();
-        int length = expDao.getAllExpenses().size();
-        Assertions.assertThrows(IncompleteExpenseException.class, () -> {
-           expDao.createExpense(exp);
-        });
-        exp.setAmount(100);
-        Assertions.assertThrows(IncompleteExpenseException.class, () -> {
-            expDao.createExpense(exp);
-        });
-        exp.setStatus(Expense.Status.PENDING);
-        Assertions.assertThrows(IncompleteExpenseException.class, () -> {
-            expDao.createExpense(exp);
-        });
-        exp.setDate(100);
-
-        Assertions.assertEquals(length, expDao.getAllExpenses().size());
-
-        Expense received = expDao.createExpense(exp);
-        Assertions.assertNotNull(received);
-        Assertions.assertTrue(expDao.deleteExpense(exp.getId()));
-    }
-
-    @Test
-    public void incompleteExpenseThrowsExceptionDuringReplacing() {
-        // IncompleteExpenseException thrown if you try to insert without required fields
-        // Incomplete expense is not inserted.
-        Expense exp = new Expense();
-        exp.setAmount(100);
-        exp.setStatus(Expense.Status.PENDING);
-        exp.setDate(100);
-
-        exp = expDao.createExpense(exp);
-        Assertions.assertNotNull(exp);
-
-        final Expense newExp = new Expense();
-        Assertions.assertThrows(IncompleteExpenseException.class, () -> {
-            expDao.replaceExpense(newExp);
-        });
-        newExp.setId(exp.getId());
-        Assertions.assertThrows(IncompleteExpenseException.class, () -> {
-            expDao.replaceExpense(newExp);
-        });
-        newExp.setAmount(4000);
-        Assertions.assertThrows(IncompleteExpenseException.class, () -> {
-            expDao.replaceExpense(newExp);
-        });
-        newExp.setStatus(Expense.Status.DENIED);
-        Assertions.assertThrows(IncompleteExpenseException.class, () -> {
-            expDao.replaceExpense(newExp);
-        });
-        newExp.setDate(1000);
-
-        Expense received = expDao.getExpenseById(exp.getId());
-        Assertions.assertEquals(exp.getAmount(), received.getAmount());
-
-        received = expDao.replaceExpense(newExp);
-        Assertions.assertNotNull(received);
-
-        Assertions.assertTrue(expDao.deleteExpense(received.getId()));
     }
 }

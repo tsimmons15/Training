@@ -12,7 +12,7 @@ public interface ExpensesService {
     Expense getExpenseById(int id);
     Employee getEmployeeById(int id);
     List<Expense> getAllExpenses();
-    List<Expense> getExpensesByStatus();
+    List<Expense> getExpensesByStatus(Expense.Status status);
     List<Expense> getExpensesByEmployee(int employeeId);
     List<Employee> getAllEmployees();
 
