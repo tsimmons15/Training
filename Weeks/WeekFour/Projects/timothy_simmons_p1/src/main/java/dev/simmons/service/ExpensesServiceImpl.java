@@ -28,17 +28,17 @@ public class ExpensesServiceImpl implements ExpensesService{
 
     @Override
     public Expense getExpenseById(int id) {
-        return null;
+        return expDao.getExpenseById(id);
     }
 
     @Override
     public Employee getEmployeeById(int id) {
-        return null;
+        return empDao.getEmployeeById(id);
     }
 
     @Override
     public List<Expense> getAllExpenses() {
-        return null;
+        return expDao.getAllExpenses();
     }
 
     @Override
@@ -48,17 +48,17 @@ public class ExpensesServiceImpl implements ExpensesService{
 
     @Override
     public List<Expense> getExpensesByEmployee(int employeeId) {
-        return null;
+        return expDao.getAllEmployeeExpenses(employeeId);
     }
 
     @Override
     public List<Employee> getAllEmployees() {
-        return null;
+        return empDao.getAllEmployees();
     }
 
     @Override
     public Employee replaceEmployee(Employee employee) {
-        return null;
+        return empDao.replaceEmployee(employee);
     }
 
     @Override
@@ -68,11 +68,18 @@ public class ExpensesServiceImpl implements ExpensesService{
 
     @Override
     public boolean deleteEmployee(int id) {
-        return false;
+        List<Expense> expenses = getExpensesByEmployee(id);
+        if (expenses != null) {
+            for(Expense e: expenses) {
+                deleteExpense(e.getId());
+            }
+        }
+
+        return empDao.deleteEmployee(id);
     }
 
     @Override
     public boolean deleteExpense(int id) {
-        return false;
+        return expDao.deleteExpense(id);
     }
 }

@@ -11,6 +11,7 @@ public class TestEmployeeDAO {
     @Test
     @Order(1)
     public void createAnEmployee() {
+        empDao = new PostgresEmployeeDAO();
         Employee emp = new Employee();
         emp.setFirstName("Testing");
         emp.setLastName("Testing");

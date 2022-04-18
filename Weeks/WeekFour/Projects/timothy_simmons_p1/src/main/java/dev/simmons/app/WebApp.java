@@ -1,16 +1,17 @@
 package dev.simmons.app;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import dev.simmons.data.PostgresEmployeeDAO;
 import dev.simmons.data.PostgresExpenseDAO;
 import dev.simmons.entities.Employee;
 import dev.simmons.entities.Expense;
-import dev.simmons.exceptions.ExpenseNotPendingException;
-import dev.simmons.exceptions.NegativeExpenseException;
+import dev.simmons.exceptions.*;
 import dev.simmons.service.ExpensesService;
 import dev.simmons.service.ExpensesServiceImpl;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import io.javalin.Javalin;
+import java.util.List;
 
 public class WebApp {
     private static ExpensesService service;
@@ -37,17 +38,50 @@ public class WebApp {
         });
 
         server.get("/employees", ctx -> {
-            // getAllEmployees();
+            List<Employee> employeeList = service.getAllEmployees();
+            if (employeeList == null) {
+                ctx.status(500);
+                ctx.result("{\"error\":\"Unable to retrieve employee list.\"}");
+            } else {
+                ctx.status(200);
+                ctx.result("{\"result\": " +  gson.toJson(employeeList) + "}");
+            }
         });
         server.get("/employees/{index}", ctx -> {
-            // getEmployeeByIndex(index);
+            String param = ctx.pathParam("index") + "";
+            int id = Integer.parseInt(param);
+            Employee emp = service.getEmployeeById(id);
+            if (emp == null) {
+                throw new NoSuchEmployeeException("Unable to find employee with id " + id);
+            }
+            ctx.status(200);
+            ctx.result("{\"result\": " + gson.toJson(emp) + "}");
         });
 
         server.put("/employees/{index}", ctx -> {
-            // replaceEmployee(employee);
+            String param = ctx.pathParam("index") + "";
+            int id = Integer.parseInt(param);
+            Employee emp = gson.fromJson(ctx.body(), Employee.class);
+            emp.setId(id);
+            emp = service.replaceEmployee(emp);
+            if (emp == null) {
+                ctx.status(500);
+                ctx.result("{\"error\": \"Unable to update the employee.\"}");
+            } else {
+                ctx.status(200);
+                ctx.result("{\"result\": " + gson.toJson(emp) + "}");
+            }
         });
         server.delete("/employees/{index}", ctx -> {
-            // deleteEmployee(employee);
+            String param = ctx.pathParam("index") + "";
+            int id = Integer.parseInt(param);
+            if (service.deleteEmployee(id)) {
+                ctx.status(200);
+                ctx.result("{\"result\":\"Successfully deleted employee " + id + "\"}");
+            } else {
+                ctx.status(500);
+                ctx.result("{\"error\": \"Unable to delete employee " + id + "\"}");
+            }
         });
 
         server.post("/expenses", ctx -> {
@@ -62,22 +96,68 @@ public class WebApp {
                     ctx.result("{\"error\":\"Unable to save the provided expense: " + exp + "\"}");
                 } else {
                     ctx.status(201);
-                    ctx.result("{\"result\":\"Created new employee, " + received.getId() + "\"}");
+                    ctx.result("{\"result\":\"Created new expense, " + received.getId() + "\"}");
                 }
             }
         });
         server.post("/employees/{index}/expenses", ctx -> {
-            // Adds an expense for employee id={index}
-            // createExpense(expense)
+            String param = ctx.pathParam("index") + "";
+            int id = Integer.parseInt(param);
+            Expense exp = gson.fromJson(ctx.body(), Expense.class);
+            if (exp == null) {
+                ctx.status(500);
+                ctx.result("{\"error\":\"Unable to parse the provided expense. Check the syntax: '" + ctx.body() + "'\"}");
+            } else {
+                exp.setIssuer(id);
+                Expense received;
+                if (exp.getId() > 0) {
+                    received = service.replaceExpense(exp);
+                } else {
+                    received = service.createExpense(exp);
+                }
+                if (received == null) {
+                    ctx.status(500);
+                    ctx.result("{\"error\":\"Unable to assign the provided expense, " + exp + ", to employee " + id + "\"}");
+                } else {
+                    ctx.status(201);
+                    ctx.result("{\"result\":\"Expense, " + received.getId() + ", successfully assigned to employee " + id + ".\"}");
+                }
+            }
         });
 
         server.get("/expenses", ctx -> {
-            // getAllExpenses();
+            List<Expense> expenses = service.getAllExpenses();
+            if (expenses == null) {
+                ctx.status(500);
+                ctx.result("{\"error\":\"Unable to retrieve all expenses.\"}");
+            } else {
+                ctx.status(200);
+                ctx.result("{\"result\": " + gson.toJson(expenses)  + "}");
+            }
         });
         server.get("/expenses/{index}", ctx -> {
-            // getExpenseById(index);
+            String param = ctx.pathParam("index") + "";
+            int id = Integer.parseInt(param);
+            Expense exp = service.getExpenseById(id);
+            if (exp == null) {
+                ctx.status(500);
+                ctx.result("{\"error\":\"Unable to get the expense " + id + ".\"}");
+            } else {
+                ctx.status(200);
+                ctx.result("{\"result\": " + gson.toJson(exp) + "}");
+            }
         });
         server.get("/employees/{index}/expenses", ctx -> {
+            String param = ctx.pathParam("index") + "";
+            int id = Integer.parseInt(param);
+            List<Expense> expenses = service.getExpensesByEmployee(id);
+            if (expenses == null) {
+                ctx.status(500);
+                ctx.result("{\"error\":\"Unable to get the list of expenses for employee " + id + ".\"}");
+            } else {
+                ctx.status(200);
+                ctx.result("{\"result\": " + gson.toJson(expenses) + "}");
+            }
             // Gets all expenses for employee id={index}
             // getExpensesByEmployee(index);
         });
@@ -101,21 +181,78 @@ public class WebApp {
             }
         });
         server.patch("/expenses/{index}/approve", ctx -> {
-            // approveExpense(index);
+            String param = ctx.pathParam("index") + "";
+            int id = Integer.parseInt(param);
+            Expense exp = service.getExpenseById(id);
+            if (exp == null) {
+                throw new NoSuchExpenseException("Unable to find expense with id " + id);
+            }
+            exp.setStatus(Expense.Status.APPROVED);
+            exp = service.replaceExpense(exp);
+            if (exp == null) {
+                ctx.status(500);
+                ctx.result("{\"error\": \"Unable to approve expense " + id + ".\"}");
+            } else {
+                ctx.status(200);
+                ctx.result("{\"result\": \"Successfully approved expense " + id + ".\"}");
+            }
         });
         server.patch("/expenses/{index}/deny", ctx -> {
-            // denyExpense(index);
+            String param = ctx.pathParam("index") + "";
+            int id = Integer.parseInt(param);
+            Expense exp = service.getExpenseById(id);
+            if (exp == null) {
+                throw new NoSuchExpenseException("Unable to find expense with id " + id);
+            }
+            exp.setStatus(Expense.Status.DENIED);
+            exp = service.replaceExpense(exp);
+            if (exp == null) {
+                ctx.status(500);
+                ctx.result("{\"error\": \"Unable to deny expense " + id + ".\"}");
+            } else {
+                ctx.status(200);
+                ctx.result("{\"result\": \"Successfully denied expense " + id + ".\"}");
+            }
         });
 
         server.delete("/expenses/{index}", ctx -> {
-            // deleteExpense(index);
+            String param = ctx.pathParam("index") + "";
+            int id = Integer.parseInt(param);
+            if (service.deleteExpense(id)) {
+                ctx.status(200);
+                ctx.result("{\"result\":\"Successfully deleted expense " + id + "\"}");
+            } else {
+                ctx.status(500);
+                ctx.result("{\"error\": \"Unable to delete expense " + id + "\"}");
+            }
         });
 
+        /*
+         * EXCEPTION HANDLING RESPONSES
+         */
+        server.exception(NumberFormatException.class, (ex, ctx) -> {
+            ctx.status(400);
+            ctx.result("{\"error\":\"Unable to parse the index provided: " + ctx.path() + "\"}");
+        });
         server.exception(ExpenseNotPendingException.class, (ex, ctx) -> {
             ctx.status(400); // One of the 400s since the user is making a mistake
+            ctx.result("{\"error\":\"" + ex.getMessage() + "\"}");
         });
-        server.exception(NegativeExpenseException.class, (ex, ctx) -> {
+        server.exception(NonpositiveExpenseException.class, (ex, ctx) -> {
             ctx.status(400); // One of the 400s since the user is making a mistake
+            ctx.result("{\"error\":\"" + ex.getMessage() + "\"}");
+        });
+        server.exception(InvalidExpenseException.class, (ex, ctx) -> {
+           ctx.status(400);
+           ctx.result("{\"error\":\"" + ex.getMessage() + "\"}");
+        });
+        server.exception(NoSuchExpenseException.class, (ex, ctx) -> {
+           ctx.status(404);
+           ctx.result("{\"error\":\"" + ex.getMessage() + "\"}");
+        });
+        server.exception(NoSuchEmployeeException.class, (ex, ctx) -> {
+            ctx.status(404);
+            ctx.result("{\"error\":\"" + ex.getMessage() + "\"}");
         });
 
 

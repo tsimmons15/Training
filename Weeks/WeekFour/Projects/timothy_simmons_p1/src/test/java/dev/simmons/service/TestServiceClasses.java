@@ -22,6 +22,7 @@ public class TestServiceClasses {
     private static List<Employee> employees;
     private static List<Expense> expenses;
     private static Random rand;
+
     @BeforeAll
     public static void setup() {
         service = new ExpensesServiceImpl(new PostgresEmployeeDAO(), new PostgresExpenseDAO());
@@ -43,7 +44,7 @@ public class TestServiceClasses {
             int id = employees.get(rand.nextInt(employees.size())).getId();
              Expense exp = new Expense();
              exp.setDate(LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
-             exp.setAmount(rand.nextDouble() * 10000);
+             exp.setAmount((long)(rand.nextDouble() * 10000));
              exp.setIssuer(id);
              switch (rand.nextInt(Expense.Status.values().length)) {
                  case 0:
@@ -64,7 +65,7 @@ public class TestServiceClasses {
         int id = employees.get(rand.nextInt(employees.size())).getId();
         Expense exp = new Expense();
         exp.setDate(LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
-        exp.setAmount(rand.nextDouble()*10000);
+        exp.setAmount((long)(rand.nextDouble() * 10000));
         exp.setIssuer(id);
         exp.setStatus(Expense.Status.DENIED);
         exp = service.createExpense(exp);
@@ -75,7 +76,7 @@ public class TestServiceClasses {
         id = employees.get(rand.nextInt(employees.size())).getId();
         exp = new Expense();
         exp.setDate(LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
-        exp.setAmount(rand.nextDouble()*10000);
+        exp.setAmount((long)(rand.nextDouble() * 10000));
         exp.setIssuer(id);
         exp.setStatus(Expense.Status.APPROVED);
         exp = service.createExpense(exp);

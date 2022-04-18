@@ -30,12 +30,12 @@ public class Expense implements Comparable<Expense>{
         this.id = id;
     }
 
-    public double getAmount() {
-        return (double)(amount/100.0);
+    public long getAmount() {
+        return amount;
     }
 
-    public void setAmount(double amount) {
-        this.amount = (long)(amount*100);
+    public void setAmount(long amount) {
+        this.amount = amount;
     }
 
     public Status getStatus() {
@@ -65,7 +65,7 @@ public class Expense implements Comparable<Expense>{
     @Override
     public String toString() {
         DecimalFormat df = new DecimalFormat("#.00");
-        return "Expense(" + getId() + ") for $" + df.format(getAmount());
+        return "Expense(" + getId() + ") for $" + df.format(getAmount()/100.0);
     }
 
     @Override
