@@ -11,7 +11,7 @@ public class PostgresEmployeeDAO implements EmployeeDAO{
     @Override
     public Employee createEmployee(Employee employee) {
         try (Connection conn = PostgresConnection.getConnection()) {
-            String sql = "insert into employee (employee_first_name, employee_last_name) values (?,?);";
+            String sql = "insert into employee (first_name, last_name) values (?,?);";
             PreparedStatement statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, employee.getFirstName());
             statement.setString(2, employee.getLastName());

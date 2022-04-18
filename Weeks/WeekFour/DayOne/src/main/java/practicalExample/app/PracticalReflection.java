@@ -12,9 +12,8 @@ public class PracticalReflection {
         adam.setAge(18);
         System.out.println(adam);
 
-        Dog dog = new Dog();
+        Dog dog = new Dog("Spot");
         dog.setOwner(adam.getFname());
-        dog.setName("Spot");
         dog.setAge(3);
 
         System.out.println(dog);

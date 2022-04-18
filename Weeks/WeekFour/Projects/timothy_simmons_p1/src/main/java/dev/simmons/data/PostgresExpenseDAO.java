@@ -13,7 +13,7 @@ public class PostgresExpenseDAO implements ExpenseDAO{
     @Override
     public Expense createExpense(Expense expense) {
         try (Connection conn = PostgresConnection.getConnection()) {
-            String sql = "insert into expense (expense_amount, expense_status, expense_date, employee_issuer) values (?,?,?,?);";
+            String sql = "insert into expense (amount, status, date, issuer) values (?,?,?,?);";
             PreparedStatement statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             statement.setLong(1, (long)(expense.getAmount()*100));
             statement.setString(2, expense.getStatus().name());
@@ -79,8 +79,8 @@ public class PostgresExpenseDAO implements ExpenseDAO{
     @Override
     public Expense replaceExpense(Expense expense) throws ExpenseNotPendingException {
         try (Connection conn = PostgresConnection.getConnection()) {
-            String sql = "update expense set expense_amount = ?, expense_status = ?, " +
-                    "expense_date = ?, employee_issuer = ? where expense_id = ?;";
+            String sql = "update expense set amount = ?, status = ?, " +
+                    "date = ?, issuer = ? where expense_id = ?;";
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setLong(1,(long)(expense.getAmount()*100));
             statement.setString(2, expense.getStatus().name());
