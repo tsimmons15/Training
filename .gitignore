@@ -4,3 +4,4 @@
 **/*/*.iml
 **/*/pom.xml
 **/*/*.log
+**/*/dependency-reduced-pom.xml
