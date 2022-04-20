@@ -45,3 +45,4 @@ insert into expense (amount, status, date) values (
 
 select * from employee;
 select * from expense;
+delete from employee;
