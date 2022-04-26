@@ -19,7 +19,7 @@ You will be creating a REST API for an expense reimbursement system. The system 
 ## Bussiness Rules
 - All expenses have a single employee as the issuer
 - Expenses start as pending and must then be approved or denied
-  - Once approved or denied they CANNOT be deleted or edited
+  - **Once approved or denied they CANNOT be deleted or edited**
 - Negative expenses are not allowed
 
 ## Routes
