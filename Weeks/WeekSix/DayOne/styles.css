@@ -1,0 +1,23 @@
+p {
+    color:blue;
+    background-color: rgba(171, 49, 5, 0.295);
+}
+dt {
+    color: rebeccapurple;
+}
+
+#heismanTitle {
+    color: salmon;
+}
+
+.championships {
+    color:blueviolet;
+}
+
+.championships tbody tr {
+    color:greenyellow;
+}
+
+dd:hover {
+    color:red;
+}
