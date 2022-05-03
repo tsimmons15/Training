@@ -70,16 +70,19 @@ const lname = "Ranieri";
 const greeting = `Hello, ${fname} ${lname}`;
 console.log(greeting);
 
-// objects / .prototype
+// objects / class.prototype?
 const obj = {
     "attr1": "value",
     "attr2": "value",
     "attr3": "value",
-    "name": "Timothy",
     "func": () => {
         console.log('Why, hello there, ' + this.name + '!');
-    }
-
+        // Demonstrating the issue with arrow functions vs. function() keyword.
+    },
+    "thing": function () {
+        console.log(`Why, hello there, ${this.name}!`);
+    },
+    "name": "Timothy"
 }; // JSON - JavaScript Object Notation
 
 console.log(obj);
@@ -88,6 +91,7 @@ obj.attr1 = "value2";
 
 console.log(obj);
 obj.func();
+obj.thing();
 delete obj.attr3;
 console.log(obj);
 obj.attr2 = undefined;
