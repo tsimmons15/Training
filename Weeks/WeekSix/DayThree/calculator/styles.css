@@ -1,0 +1,60 @@
+#content {
+    height: 25rem;
+    width: 25em;
+}
+
+#history {
+    height: 100%;
+    width: 35%;
+    float: left;
+    clear: left;
+}
+
+#historyList {
+    list-style: none;
+}
+
+#calculator {
+    border: 2px solid black;
+    height: 98%;
+    width: 55%;
+    float: right;
+    clear: right;
+}
+
+#expression {
+    width: 96%;
+    height: 1.5rem;
+    font-size: large;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+#display {
+    width: 96%;
+    height: 3rem;
+    font-size: large;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+#entry {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#entry tr {
+    height: 100%;
+    width: 100%;
+}
+
+
+#entry td {
+    padding: 0px;
+    margin: 0px;
+}
+
+#entry button {
+    height: 3rem;
+    width: 100%;
+    margin: 0px;
+    padding: 0px;
+}

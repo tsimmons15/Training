@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Calculator</title>
+        <link rel="stylesheet" href="styles.css" />
+    </head>
+
+    <body>
+        <div id="content">
+            <div id="history">
+                <fieldset>
+                    <legend>History</legend>
+                    <ul id="historyList">
+
+                    </ul>
+                </fieldset>
+            </div>
+            <div id="calculator">
+                <input type="text" id="expression" />
+                <input type="text" id="display" />
+                <table id="entry">
+                    <tbody>
+                        <tr>
+                            <td><button disabled>&nbsp;</button></td>
+                            <td><button onclick="handleMem(event,'memadd')">M+</button></td>
+                            <td><button onclick="handleMem(event,'memrem')">M-</button></td>
+                            <td><button onclick="handleMem(event,'memclear')">Mc</button></td>
+                        </tr>
+                        <tr>
+                            <td><button onclick="handleOperator(event,'%')">%</button></td>
+                            <td><button onclick="handleClear(event,'clear entry')">CE</button></td>
+                            <td><button onclick="handleClear(event,'clear')">C</button></td>
+                            <td><button onclick="handleDelete(event,'bck')">&DoubleLeftArrow;</button></td>
+                        </tr>
+                        <tr>
+                            <td><button onclick="handleOperator(event,'inv')"><sup>1</sup>/<sub>x</sub></button></td>
+                            <td><button onclick="handleOperator(event,'sq')">x<sup>2</sup></button></td>
+                            <td><button onclick="handleOperator(event,'sqrt')">&Sqrt;</button></td>
+                            <td><button onclick="handleOperator(event,'/')">&divide;</button></td>
+                        </tr>
+                        <tr>
+                            <td><button onclick="handleOperand(event,'7')">7</button></td>
+                            <td><button onclick="handleOperand(event,'8')">8</button></td>
+                            <td><button onclick="handleOperand(event,'9')">9</button></td>
+                            <td><button onclick="handleOperator(event,'*')">&times;</button></td>
+                        </tr>
+                        <tr>
+                            <td><button onclick="handleOperand(event,'4')">4</button></td>
+                            <td><button onclick="handleOperand(event,'5')">5</button></td>
+                            <td><button onclick="handleOperand(event,'6')">6</button></td>
+                            <td><button onclick="handleOperator(event,'-')">&minus;</button></td>
+                        </tr>
+                        <tr>
+                            <td><button onclick="handleOperand(event,'1')">1</button></td>
+                            <td><button onclick="handleOperand(event,'2')">2</button></td>
+                            <td><button onclick="handleOperand(event,'3')">3</button></td>
+                            <td><button onclick="handleOperator(event,'+')">&plus;</button></td>
+                        </tr>
+                        <tr>
+                            <td><button onclick="handleOperator(event,'+-')">&PlusMinus;</button></td>
+                            <td><button onclick="handleOperand(event,'0')">0</button></td>
+                            <td><button onclick="handleOperand(event,'.')">.</button></td>
+                            <td><button onclick="handleEvaluate()">&equals;</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </body>
+
+    <script src=" calculator.js">
+    </script>
+</html>
