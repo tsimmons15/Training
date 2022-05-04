@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Todo List</title>
+        <style>
+            ul {
+                list-style: none;
+            }
+        </style>
+    </head>
+
+    <body>
+        <h1>Todo!</h1>
+        <fieldset>
+            <legend>New Task</legend>
+            <input id="taskInput" type="text" oninput="setTask(event)" />
+            <button onclick="addTask(event)">Add</button>
+        </fieldset>
+
+        <fieldset>
+            <legend>Pending Tasks</legend>
+            <ul id="pending">
+            </ul>
+        </fieldset>
+
+        <fieldset>
+            <legend>Completed Tasks</legend>
+            <ul id="completed">
+
+            </ul>
+        </fieldset>
+    </body>
+
+    <script>
+        let newTask = "";
+        const tasks = [];
+
+        function setTask(event) {
+            newTask = event.target.value;
+        }
+
+        function addTask(event) {
+            if (newTask !== "") {
+                tasks.push({ "title": newTask, "isComplete": false });
+                document.getElementById("taskInput").value = "";
+                renderPendingTasks();
+                newTask = "";
+            }
+        }
+
+        function renderPendingTasks() {
+            const pending = document.getElementById("pending");
+            pending.innerHTML = tasks.filter(t => !t.isComplete).
+                map(t => `<li><input type="checkbox" onclick="toggleComplete(event, '${t.title}')"/>${t.title}</li>`).join("");
+        }
+
+        function toggleComplete(event, taskDesc) {
+            const task = tasks.find(t => t.title == taskDesc);
+            task.isComplete = !task.isComplete;
+            renderPendingTasks();
+            renderCompletedTasks();
+        }
+
+        function renderCompletedTasks() {
+            const completed = document.getElementById("completed");
+            completed.innerHTML = tasks.filter(t => t.isComplete).
+                map(t => `<li><input type="checkbox" checked onclick="toggleComplete(event, '${t.title}')"/>${t.title}</li>`).join("");
+        }
+
+        function checkboxChange(event) {
+            console.log(event);
+        }
+
+    </script>
+</html>

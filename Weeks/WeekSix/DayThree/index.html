@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+    </head>
+
+    <body>
+        <input id="inputField" type="text" />
+        <button onclick="storeInput(event)">Enter Name!</button>
+        <button onclick="hello(event)">Hello</button>
+        <button id="holaBtn">Hola</button>
+        <div id="greetField"></div>
+    </body>
+
+    <script>
+        let input = null;
+        const greetField = document.getElementById("greetField");
+        function hello(event) {
+            console.log(event);
+            greetField.innerHTML = "<p><b>Hello, " + input + "!</b></p>";
+        }
+        function hola() {
+            alert("Hola!");
+        }
+        function storeInput(event) {
+            const inputField = document.getElementById("inputField");
+            console.log(inputField.value);
+            input = inputField.value;
+        }
+
+        const holaButton = document.getElementById("holaBtn");
+        //holaButton.onclick = hola;
+        holaButton.addEventListener("click", (event) => {
+            console.log(event);
+            greetField.innerHTML = "<p><b>Hola, " + input + "!!</b></p>";
+        });
+    </script>
+</html>

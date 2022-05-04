@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>GroceryMate</title>
+    </head>
+
+    <body>
+        <h1>GroceryMate</h1>
+        <fieldset>
+            <input type="text" oninput="setItem(event)" id="item" />
+            <button onclick="addItem(event)">Add</button>
+            <legend>Add Grocery</legend>
+        </fieldset>
+        <fieldset>
+            <legend>Grocery List</legend>
+            <ul id="groceryList">
+
+            </ul>
+        </fieldset>
+    </body>
+
+    <script>
+        const groceries = [];
+        let grocery = "";
+
+        function setItem(event) {
+            grocery = event.target.value;
+        }
+
+        function addItem(event) {
+            if (grocery !== "") {
+                groceries.push(grocery);
+                renderList();
+                document.getElementById("item").value = "";
+                grocery = "";
+            }
+        }
+
+        function renderList() {
+            const list = document.getElementById("groceryList");
+
+            list.innerHTML = groceries.map(g => `<li>${g}</li>`).join("");
+        }
+    </script>
+</html>
