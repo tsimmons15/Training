@@ -1,0 +1,100 @@
+* {
+    padding: 0px;
+    margin: 0px;
+    height: 100%;
+    width: 100%;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 0.2fr 1.8fr 1fr;
+    gap: 0px 0px;
+    grid-template-areas:
+        "logo_strip logo_strip logo_strip"
+        "content content content"
+        "content content content";
+
+}
+
+.logo_strip {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    gap: 0px 0px;
+    grid-template-areas:
+        "logo start classes races items spells"
+        "logo start classes races items spells"
+        "logo start classes races items spells";
+    justify-content: space-around;
+    align-content: space-around;
+    justify-items: center;
+    align-items: center;
+    grid-area: logo_strip;
+    /*font-size: larger;*/
+    font-family: Copperplate, Papyrus, fantasy;
+    background-color: rgba(119, 136, 153, 0.5);
+}
+
+.logo {
+    grid-area: logo;
+}
+
+.logo img {
+    height: 40px;
+    width: 40px;
+}
+
+.start {
+    grid-area: start;
+}
+
+.classes {
+    grid-area: classes;
+}
+
+.races {
+    grid-area: races;
+}
+
+.items {
+    grid-area: items;
+}
+
+.spells {
+    grid-area: spells;
+}
+
+.navlogo,
+.navitem {
+    box-shadow: 1px 3px rgba(40, 40, 40, .8);
+    color: black;
+    text-decoration: none;
+}
+
+#content {
+    background-color: rgba(231, 190, 9, 0.273);
+    display: grid;
+    grid-template-columns: 0.5fr 1.5fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    gap: 0px 0px;
+    grid-template-areas:
+        "inner_nav inner_content inner_content"
+        "inner_nav inner_content inner_content"
+        "inner_nav inner_content inner_content";
+    grid-area: content;
+}
+
+#inner_nav {
+    grid-area: inner_nav;
+    border: 1px solid black;
+    display: flex;
+}
+
+#inner_content {
+    grid-area: inner_content;
+}
+
+.clickable:hover {
+    cursor: pointer;
+}

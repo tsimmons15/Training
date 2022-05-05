@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Entering the Dungeon</title>
+        <link rel="stylesheet" href="styles.css" />
+    </head>
+
+    <body>
+        <div class="container">
+            <div class="logo_strip">
+                <div class="logo navlogo clickable" onclick="navigate(event, 'home')">
+                    <img src="images/dragon_ampersand.png" alt="Totally not the D&amp;D logo." />
+                </div>
+                <div class="start navitem clickable" onclick="navigate(event, 'start')">
+                    New Adventure
+                </div>
+                <div class="classes navitem clickable" onclick="navigate(event, 'classes')">
+                    Classes
+                </div>
+                <div class="races navitem clickable" onclick="navigate(event, 'races')">
+                    Races
+                </div>
+                <div class="items navitem clickable" onclick="navigate(event, 'items')">
+                    Items
+                </div>
+                <div class="spells navitem clickable" onclick="navigate(event, 'spells')">
+                    Spells
+                </div>
+            </div>
+            <div id="content">
+                <h2 id="title"></h2>
+                <ul id="navList">
+
+                </ul>
+            </div>
+        </div>
+    </body>
+
+    <script src="the-dungeon.js">
+    </script>
+</html>

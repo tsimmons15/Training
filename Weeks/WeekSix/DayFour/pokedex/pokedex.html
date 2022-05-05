@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Pokedex</title>
+    </head>
+
+    <body>
+        <h1>Viewer</h1>
+
+        <fieldset>
+            <legend>Pokesearch</legend>
+            <input id="pokeName" type="text" oninput="getPokemonName(event)" />
+            <button onclick="findPokemon(event)">Find Pokemon</button>
+        </fieldset>
+
+        <fieldset>
+            <legend>Pokedata</legend>
+            <table>
+                <img id="pokeImage" src="" alt="Unknown Pokemon" />
+                <thead>
+                    <th>Name</th>
+                    <th>Height</th>
+                    <th>Weight</th>
+                </thead>
+                <tbody>
+                    <tr id="pokeRow"></tr>
+                </tbody>
+            </table>
+        </fieldset>
+    </body>
+
+    <script>
+        let pokeSearch = "";
+
+        function getPokemonName(event) {
+            pokeSearch = event.target.value;
+        }
+
+        async function findPokemon(event) {
+            const uri = `https://pokeapi.co/api/v2/pokemon/${pokeSearch}`;
+            const response = await fetch(uri);
+            const pokedata = await response.json();
+            console.log(pokedata);
+            const pokeRow = document.getElementById("pokeRow");
+            pokeRow.innerHTML = `<td>${pokedata.name}</td><td>${pokedata.height}</td><td>${pokedata.weight}</td>`;
+
+            const pokeImage = document.getElementById("pokeImage");
+            pokeImage.src = pokedata.sprites['front_default'];
+            pokeImage.alt = "Image for " + pokeSearch;
+
+            document.getElementById("pokeName").value = "";
+        }
+    </script>
+</html>

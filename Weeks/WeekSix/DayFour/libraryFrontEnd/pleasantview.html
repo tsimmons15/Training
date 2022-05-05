@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Pleasantview Library</title>
+    </head>
+
+    <body>
+        <h1>Employee Dashboard</h1>
+        <fieldset>
+            <legend>New Book Dropoff</legend>
+            <label for="newBookTitle">Title</label>
+            <input id="newBookTitle" type="text" oninput="getBookTitle(event)" />
+            <label for="newBookAuthor">Author</label>
+            <input id="newBookAuthor" type="text" oninput="getBookAuthor(event)" />
+            <button onclick="bookDropoff()">Dropoff</button>
+        </fieldset>
+
+        <fieldset>
+            <legend>Current Inventory</legend>
+            <button onclick="getAllBooks()">Refresh</button>
+            <table>
+                <thead>
+                    <th>Id</th>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Available</th>
+                </thead>
+                <tbody id="bookList">
+
+                </tbody>
+            </table>
+        </fieldset>
+    </body>
+
+    <script>
+        const newBook = { "id": "", "title": "", "author": "", "returnDate": "" };
+
+        function getBookAuthor(event) {
+            newBook.author = event.target.value;
+        }
+
+        function getBookTitle(event) {
+            newBook.title = event.target.value;
+        }
+
+        async function bookDropoff() {
+            const uri = "http://localhost:5000/books";
+            console.log(JSON.stringify(newBook));
+            const response = await fetch(uri, {
+                method: "POST",
+                body: JSON.stringify(newBook),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.status === 200) {
+                console.log("Success");
+            } else {
+                console.log("Fail");
+            }
+
+            document.getElementById("newBookAuthor").value = "";
+            document.getElementById("newBookTitle").value = "";
+            getAllBooks();
+        }
+
+        async function getAllBooks() {
+            const uri = "http://localhost:5000/books";
+            const response = await fetch(uri);
+
+            const books = await response.json();
+            const bookList = document.getElementById("bookList");
+            bookList.innerHTML = books.map(book =>
+                `<tr>
+                    <td>${book.id}</td>
+                    <td>${book.title}</td>
+                    <td>${book.author}</td>
+                    <td>${book.returnDate === 0 ? "Available" : new Date(book.returnDate).toDateString()}</td>
+                </tr>`).join("");
+        }
+    </script>
+</html>
