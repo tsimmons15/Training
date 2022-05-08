@@ -1,13 +1,17 @@
 :root {
     font-size: calc(.5em + 1vw);
+    --main-font: Helvetica, Arial, sans-serif;
+    --logo-color: #2f4f4f;
+    --main-bg: #fff;
+    --main-color: #000;
 }
 
 body {
-    font-family: sans-serif;
+    font-family: var(--main-font);
 }
 
 h1 {
-    color: #2f4f4f;
+    color: var(--logo-color, grey);
     margin-bottom: 10px;
 }
 
@@ -55,6 +59,8 @@ a:active {
     padding: 1em;
     border-radius: .5em;
     border: 1px solid #999;
+    background-color: var(--main-bg);
+    color: var(--main-color);
 }
 
 .panel>h2 {
@@ -80,4 +86,12 @@ a:active {
 .footer a {
     color: inherit;
     text-decoration: underline;
+}
+
+.dark {
+    margin-top: 2em;
+    padding: 1em;
+    background-color: #999;
+    --main-bg: #333;
+    --main-color: #fff;
 }

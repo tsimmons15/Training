@@ -1,3 +1,9 @@
+*,
+::before,
+::after {
+    box-sizing: border-box;
+}
+
 body {
     width: 100%;
     height: 100%;
@@ -6,27 +12,23 @@ body {
 }
 
 #displayClasses {
-    display: table-row;
     height: 100%;
     width: 35%;
 }
 
 #displayRaces {
-    display: table-row;
     height: 100%;
     width: 60%;
 }
 
 #raceList,
 #classList {
-    display: table-cell;
     width: 30%;
     height: 100%;
 }
 
 #raceInfo,
 #classInfo {
-    display: table-cell;
     width: 50%;
     height: 100%;
 }
@@ -37,7 +39,7 @@ body {
 }
 
 .right {
-    float: right;
+    float: left;
     margin: 0px 5px;
 }
 

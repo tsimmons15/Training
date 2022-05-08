@@ -10,13 +10,10 @@ class Shape {
     shape = null;
     shapeCount = 0;
     constructor (sides = 0, length = 0) {
-        if (length <= 0 || sides < 3) {
+        if (length < 0 || sides < 3) {
             throw new BadShape();
         }
-        this.shape = [];
-        for (let i = 0; i < sides; i++) {
-            this.shape.push(length);
-        }
+        this.shape = [...'1'.repeat(sides)].map(s => length);
         this.shapeCount++;
     }
 

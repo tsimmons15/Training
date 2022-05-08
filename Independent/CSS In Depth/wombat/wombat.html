@@ -30,10 +30,29 @@
                     their potential.
                 </div>
             </div>
+
+            <aside class="dark">
+                <div class="panel large">
+                    <h2>Single-origin</h2>
+                    <div class="panel-body">
+                        We have built partnerships with small farms around the world to hand-select beans at the
+                        peak of season. We then carefully roast in <a href="/batch-size">small batches</a> to maximize
+                        their potential.
+                    </div>
+                </div>
+            </aside>
         </main>
         <footer class="footer">
             &copy; 2016 Wombat Coffee Roasters &mdash;
             <a href="/terms-of-us">Terms of Use</a>
         </footer>
     </body>
+
+    <script>
+        const rootElement = document.documentElement;
+        const styles = getComputedStyle(rootElement);
+        const mainColor = styles.getPropertyValue('--main-bg');
+        console.log(String(mainColor).trim());
+        rootElement.style.setProperty('--main-bg', '#cdf');
+    </script>
 </html>
