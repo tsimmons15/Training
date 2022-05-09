@@ -6,3 +6,4 @@
 **/*/*.log
 **/*/dependency-reduced-pom.xml
 **/.gitignore
+**/node_modules/*
