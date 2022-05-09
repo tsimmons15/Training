@@ -1,0 +1,79 @@
+/* normalize.css (https://necolas.github.io/normalize.css/ or npm install normalize.css) 
+    a useful Browser normalizing CSS file. Imported at the 
+    top so we can easily override where needed*/
+@import url(normalize.css);
+
+/*Base Styles*/
+/* They don't necessarily have anything to do with a *specific*
+website, or its modules, but set a foundation/base to build on.
+*/
+:root {
+    box-sizing: border-box;
+}
+
+*,
+::before,
+::after {
+    box-sizing: inherit;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    /* Set up default color palette if it's not black on white, etc...
+        Especially setting up variables*/
+    --bg-color: rgba(80, 80, 80, .07);
+    --font-color: rgba(250, 250, 250, 1);
+
+}
+
+/*
+  Common base style when navs use anchor tags
+   If you want a more traditional anchor you can style it
+   at that specific point.
+  Rule of thumb: base styles target basic tags. If you're using 
+   IDs or classes, you're probably not setting a generic base style.
+*/
+a {
+    text-decoration: none;
+}
+
+/* A simple module: the message module */
+/* It doesn't matter what the tag is, the class is the important bit.
+   I could theoretically use this in other places, on other tags,
+   because it's a fairly generic 'module' definition.
+   Use of class instead of id to avoid issues with specificity and 
+   over-needing !important.*/
+.message {
+    padding: 0.8em 1.2em;
+    border-radius: 0.2em;
+    border: 1px solid #265559;
+    color: #265559;
+    background-color: #e0f0f2;
+}
+
+/* Module modifiers:
+    slight modifications of a module to tweak it for more specific uses
+    A convention: .module--modifier, e.g. .message--success
+    The --modifier guarantees no conflict with parent module or
+    any other module. Also guarantees that it won't conflict with any other
+    modules that might share other attributes since CSS tends to hyphenate
+    words in identifier names. Possibly might be avoidable with careful naming
+    but in large projects...
+    */
+.message--success {
+    color: #2f5926;
+    border-color: #2f5926;
+    background-color: #cfe8c9;
+}
+
+.message--warning {
+    color: #594826;
+    border-color: #594826;
+    background-color: #e8dec9;
+}
+
+.message--error {
+    color: #59262f;
+    border-color: #59262f;
+    background-color: #e8c9cf;
+}
