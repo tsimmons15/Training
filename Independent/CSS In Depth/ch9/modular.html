@@ -23,5 +23,44 @@
         <div class="message message--error">
             Save Successful!
         </div>
+        <button class="button">Default</button>
+        <button class="button button--danger">Danger</button>
+        <button class="button button--success">Success</button>
+        <button class="button button--small">Small</button>
+        <button class="button button--large">Large</button>
+        <button class="button button--danger button--small">Cancel</button>
+
+        <div class="media media--right">
+            <img class="media__image" src="runner.png" />
+            <div class="media__body">
+                <h4>Strength</h4>
+                <p>
+                    Strength training is an important part of injury prevention.
+                    Focus on your core &mdash; especially your abs and glutes.
+                </p>
+            </div>
+        </div>
+
+        <div class="dropdown">
+            <button class="dropdown__toggle">Main Menu</button>
+            <div class="dropdown__drawer">
+                <ul class="menu">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/coffees">Coffees</a></li>
+                    <li><a href="/brewers">Brewers</a></li>
+                    <li><a href="/specials">Specials</a></li>
+                    <li><a href="/about">About Us</a></li>
+                </ul>
+            </div>
+        </div>
     </body>
+
+    <script>
+
+        const toggle = document.querySelector('.dropdown__toggle');
+        toggle.addEventListener('click', function (event) {
+            event.preventDefault();
+            event.target.parentNode.classList.toggle('is-open');
+        });
+    </script>
 </html>
