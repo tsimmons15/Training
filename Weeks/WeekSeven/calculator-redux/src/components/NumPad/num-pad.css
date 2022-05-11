@@ -1,0 +1,109 @@
+div.numpad {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
+    gap: 0px 0px;
+    grid-template-areas:
+        "pct clear_entry clear backspace"
+        "inverse squared sqrt divide"
+        "num7 num8 num9 times"
+        "num4 num5 num6 subtract"
+        "num1 num2 num3 plus"
+        "plus_minus num0 radix equals";
+}
+
+.pct {
+    grid-area: pct;
+}
+
+.clear_entry {
+    grid-area: clear_entry;
+}
+
+.clear {
+    grid-area: clear;
+}
+
+.backspace {
+    grid-area: backspace;
+}
+
+.inverse {
+    grid-area: inverse;
+}
+
+.squared {
+    grid-area: squared;
+}
+
+.sqrt {
+    grid-area: sqrt;
+}
+
+.divide {
+    grid-area: divide;
+}
+
+.num7 {
+    grid-area: num7;
+}
+
+.num8 {
+    grid-area: num8;
+}
+
+.num9 {
+    grid-area: num9;
+}
+
+.times {
+    grid-area: times;
+}
+
+.num4 {
+    grid-area: num4;
+}
+
+.num5 {
+    grid-area: num5;
+}
+
+.num6 {
+    grid-area: num6;
+}
+
+.subtract {
+    grid-area: subtract;
+}
+
+.num1 {
+    grid-area: num1;
+}
+
+.num2 {
+    grid-area: num2;
+}
+
+.num3 {
+    grid-area: num3;
+}
+
+.plus {
+    grid-area: plus;
+}
+
+.plus_minus {
+    grid-area: plus_minus;
+}
+
+.num0 {
+    grid-area: num0;
+}
+
+.radix {
+    grid-area: radix;
+}
+
+.equals {
+    grid-area: equals;
+}
